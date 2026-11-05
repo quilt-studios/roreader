@@ -1,4 +1,4 @@
-# Building Kobalt
+# Building ROREADER
 
 Application code lives in `src/` and `platforms/`. Shared assets live in root `assets/`. Pinned third-party source URLs, checksums, patches and CMake recipes live in `dependencies/`. Each platform owns its CMake project, presets and toolchain definitions. Generated files, downloaded sources and incremental objects stay under ignored `build/` in this worktree.
 
@@ -83,6 +83,22 @@ Pass `-DCMAKE_PREFIX_PATH=/path/to/qt` when using a separate SDK. The executable
 
 Linux provides the same light, fast, integration and full test lanes, performance and evaluation tools, and screenshot galleries as Mac. Substitute `linux` for `mac` in desktop preset commands. Full validation uses `cmake --build --preset linux-tests` then `ctest --preset linux`; full captures use `linux-screenshots`. Captures go to `build/screenshots/linux/` and `build/screenshots/linux-light/`. Tests use Fusion and the minimal platform plugin without X11, Wayland or a visible window. Each platform owns its output and temporary files. Compare screenshots with the same host and Qt SDK. GUI operation under X11/Wayland requires separate validation.
 
+## ROREADER utilities and Windows installer
+
+The native reader's System settings open the integrated Terminal, Sketchpad and Text editor. File operations run on utility workers; reader sleep and USB transitions wait for pending utility writes. The shell is a bounded command console, not a PTY or full-screen terminal emulator. Documents are kept separately from reading profiles in `/mnt/onboard/ROREADER/` on devices, and the desktop Documents/ROREADER folder. Existing plugin and profile identities remain unchanged.
+
+`linux-light-tests` builds the utility checks together with the desktop checks. Run `ctest --preset linux-light -R roreaderTools` for file round trips, write conflicts, shell cancellation, drawing and touch-keyboard entry. The light and full galleries both include the utilities, entry row, keyboard and draft confirmation in all device-size and theme variants.
+
+After building and checking the normal Qt6 package, run from the repository root:
+
+```sh
+cmake -DROOT="$PWD" -DPACKAGE_FILE="$PWD/build/kobo-qt6/ROREADER-qt6.zip" -P platforms/installer/package.cmake
+```
+
+This creates `build/installer/ROREADER-Windows-Installer.zip` with its checksum sidecar. Extract the archive on Windows and run its BAT to open Chrome; the bundled package loads automatically. The user chooses the USB device's root directory through File System Access. The PowerShell server binds only to loopback and serves an explicit file list. It has no write API. The browser validates ZIP paths, CRCs, the expected SHA-256 and firmware family, writes assets before the activation archive, verifies readback, and attempts to restore overwritten files after an error. An existing update archive blocks installation. Firmware-family detection does not certify model compatibility or complete device installation.
+
+Run `node tests/installer.test.mjs` from the root for the ZIP and firmware checks. Native Linux tests and headless Chromium checks do not establish Windows batch-launch behavior or physical-device compatibility.
+
 ## Assets
 
 `assets/manifest.json` records the runtime file selection, version, sizes and SHA-256 checksums. Font metadata records upstream sources and revisions. The selected eBook font collection is checked in under `assets/fonts/ebook-core/`; builds do not fetch fonts. Keep the manifest consistent when changing runtime assets. All platforms include bundled hyphenation pattern names and contents in the cache policy. Pattern changes rebuild disposable book caches without changing saved reading data.
@@ -110,7 +126,7 @@ bash platforms/kobo/build.sh qt6
 
 The launcher pins these images by digest. It mounts this worktree, configures CMake and builds the reader dependencies, application and installation ZIP. It does not pull or repair SDKs. Configure and build/package durations are printed separately. Parallelism defaults to two; set `JOBS` to change it.
 
-Outputs are `build/kobo-qt5/` and `build/kobo-qt6/`. Each contains `libkobalt.so` with debug symbols and `Kobalt-qtN.zip` with a stripped installation library and runtime assets. Qt5 uses `.kobo/KoboRoot.tgz`; Qt6 uses `.kobo/Kobo.tgz`. Packaging removes its staging directory and does no work when its inputs are unchanged. Both tar formats store only the library on the system partition, with numeric owner `0:0` and mode `0755`, regardless of the build user. The build launcher runs the `check-package` target after packaging to verify the member path, ownership and permissions. The same check can be run in the prepared SDK with `cmake --build --preset qt5 --target check-package` or the Qt6 preset.
+Outputs are `build/kobo-qt5/` and `build/kobo-qt6/`. Each contains `libkobalt.so` with debug symbols and `ROREADER-qtN.zip` with a stripped installation library and runtime assets. Qt5 uses `.kobo/KoboRoot.tgz`; Qt6 uses `.kobo/Kobo.tgz`. Packaging removes its staging directory and does no work when its inputs are unchanged. Both tar formats store only the library on the system partition, with numeric owner `0:0` and mode `0755`, regardless of the build user. The build launcher runs the `check-package` target after packaging to verify the member path, ownership and permissions. The same check can be run in the prepared SDK with `cmake --build --preset qt5 --target check-package` or the Qt6 preset.
 
 `bash platforms/kobo/build.sh qt5-eval` and `qt6-eval` build evaluation packages in `build/kobo-qt5-eval/` and `build/kobo-qt6-eval/`. They add the scenario player, the scenario file, the benchmark book and the diagnostics switch; see [Release evaluation](release-evaluation.md#device-scenarios).
 
@@ -137,7 +153,7 @@ Stop and reap run-owned helper processes and remove temporary profiles, staging 
 
 `.github/workflows/ci.yml` builds Qt5, Qt6 and a signed Android release APK on branch pushes and tags. Helper checks validate version inputs, source pins and missing-key failures. Kobo jobs check the system archive member, numeric root ownership and executable permissions. Desktop application builds, native tests and screenshot galleries run locally through the Mac or Linux presets; they are not CI jobs.
 
-A tag such as `v1.0-beta.4` supplies the displayed version and Android version name. Package filenames stay fixed across releases so download links remain compatible: `Kobalt-qt5.zip`, `Kobalt-qt6.zip`, `Kobalt-android-arm64.apk` and `Kobalt-sources.tar.gz`. Branch builds use the version in `assets/manifest.json`. CI checks that a triggering tag identifies the checked-out commit. Local builds can set `KOBALT_RELEASE_VERSION` to test the same path without editing the tracked asset manifest.
+A tag such as `v1.0-beta.4` supplies the displayed version and Android version name. Package filenames stay fixed across releases so download links remain compatible: `ROREADER-qt5.zip`, `ROREADER-qt6.zip`, `Kobalt-android-arm64.apk` and `Kobalt-sources.tar.gz`. Branch builds use the version in `assets/manifest.json`. CI checks that a triggering tag identifies the checked-out commit. Local builds can set `KOBALT_RELEASE_VERSION` to test the same path without editing the tracked asset manifest.
 
 Add these repository secrets under GitHub Settings → Secrets and variables → Actions:
 

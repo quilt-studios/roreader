@@ -63,12 +63,12 @@ public:
     QString lastScratch;
     explicit Launcher() : lock(root + "/build/launcher-actions.lock") {
         lock.setStaleLockTime(0);
-        setWindowTitle("Kobalt Developer Launcher");
+        setWindowTitle("ROREADER Developer Launcher");
         resize(850, 720);
         auto *layout = new QVBoxLayout(this);
         layout->setContentsMargins(24, 24, 24, 24);
         layout->setSpacing(12);
-        auto *title = new QLabel("Kobalt • Developer Launcher");
+        auto *title = new QLabel("ROREADER • Developer Launcher");
         auto font = title->font(); font.setPointSize(font.pointSize() + 7); font.setBold(true); title->setFont(font);
         layout->addWidget(title);
         auto *location = new QLabel((host == "mac" ? QString("macOS") : QString("Linux")) + " · Qt " + qVersion() + "\n" + root);
@@ -76,7 +76,7 @@ public:
         layout->addWidget(location);
         const QStringList labels{"Build and launch desktop", "Build Kobo · Qt 5", "Build Kobo · Qt 6",
                                  "Build and run tests · headless", "Build and run tests · desktop app"};
-        const QStringList hints{"Incremental desktop build, then open Kobalt.",
+        const QStringList hints{"Incremental desktop build, then open ROREADER.",
             "Build and verify the package using the prepared Qt 5 SDK image.",
             "Build and verify the package using the prepared Qt 6 SDK image.",
             "Run the full native assertion suite with isolated profiles.",
@@ -242,7 +242,7 @@ int selfTest(Launcher &launcher) {
 int main(int argc, char **argv) {
     if (argc == 2 && qstrcmp(argv[1], "--self-test") == 0)
         qputenv("QT_QPA_PLATFORM", "minimal:enable_fonts:freetype");
-    QApplication app(argc, argv); app.setApplicationName("Kobalt Developer Launcher"); app.setStyle("Fusion");
+    QApplication app(argc, argv); app.setApplicationName("ROREADER Developer Launcher"); app.setStyle("Fusion");
     Launcher launcher;
     std::signal(SIGINT, requestStop); std::signal(SIGTERM, requestStop);
     QTimer interruptPoll; interruptPoll.setInterval(100);

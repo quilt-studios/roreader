@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROREADER installieren</title>
+<link rel="stylesheet" href="style.css">
+<main>
+  <header><img class="mark" src="/logo.png" alt=""><span>ROREADER</span><small>für Kobo & tolino</small></header>
+  <h1>Dein Reader.<br>Mehr Möglichkeiten.</h1>
+  <p class="intro">Lesen, skizzieren, schreiben. Installiere dein lokal gebautes ROREADER-Paket per USB auf einem kompatiblen Gerät mit Firmware 5.x oder 6.x.</p>
+  <p id="browser" role="status"></p>
+  <section>
+    <span class="step">01</span><h2>Gerät verbinden</h2>
+    <p>Schließe den Reader per USB an und aktiviere die Verbindung zum Computer. Sichere vorher Bücher und Lesedaten.</p>
+    <button id="device">Reader-Laufwerk auswählen</button>
+    <p id="device-status" role="status">Wähle das Hauptverzeichnis des Reader-Laufwerks.</p>
+  </section>
+  <section>
+    <span class="step">02</span><h2>Paket prüfen</h2>
+    <p>Das beiliegende ROREADER-Paket wird automatisch geprüft. Normalerweise musst du hier nichts auswählen.</p>
+    <details id="manual-package"><summary>Anderes Paket auswählen</summary>
+    <p>Für einen eigenen Build: Qt6-ZIP und die Prüfsumme aus seiner SHA256-Datei angeben. Qt5- und Evaluationspakete werden abgelehnt.</p>
+    <label class="file">ROREADER-Paket (.zip)<input id="package" type="file" accept=".zip"></label>
+    <label>Erwartete SHA-256-Prüfsumme<input id="checksum" type="text" autocomplete="off" spellcheck="false" maxlength="64" placeholder="64 Zeichen aus der SHA256SUMS-Datei des Builds"></label>
+    </details>
+    <p id="package-status" role="status">Paket und zugehörige Prüfsumme auswählen.</p>
+  </section>
+  <section>
+    <span class="step">03</span><h2>Installieren</h2>
+    <label class="check"><input type="checkbox" id="backup">Ich habe meine Daten gesichert und die Firmwareangabe am Gerät geprüft.</label>
+    <p>Die Firmwarefamilie wird aus <code>.kobo/version</code> gelesen. Sie ersetzt keine Modellprüfung: Auch innerhalb von 5.x und 6.x können einzelne Geräte oder Updates inkompatibel sein. Ältere Android-tolinos werden hier nicht unterstützt.</p>
+    <button id="install" disabled>ROREADER auf den Reader kopieren</button>
+    <progress id="progress" value="0" max="1" hidden></progress>
+    <p id="result" role="status" aria-live="polite"></p>
+  </section>
+  <footer>Lokal auf deinem Computer. Keine Uploads. Keine Anmeldung.<br>Nach erfolgreichem Kopieren: Laufwerk sicher auswerfen, USB trennen und die Installation am Reader abwarten. Ein eventuell vorhandener Mod-Manager muss die Firmware unterstützen.</footer>
+</main>
+<script type="module" src="app.js"></script>
+</html>

@@ -91,7 +91,7 @@ printf '%s\n' "$*" >> "$KOBALT_TEST_GH_LOG"
 if [[ $1 == release && $2 == view ]]; then printf 'true\n'; fi
 SH
 chmod +x "$scratch/bin/gh"
-for name in Kobalt-qt5.zip Kobalt-qt6.zip Kobalt-android-arm64.apk Kobalt-sources.tar.gz build-qt5.json; do
+for name in ROREADER-qt5.zip ROREADER-qt6.zip Kobalt-android-arm64.apk Kobalt-sources.tar.gz build-qt5.json; do
     printf 'fixture\n' > "$scratch/draft/build/release/$name"
 done
 for version in v1.0-beta.4 v1.2.3; do
@@ -101,7 +101,7 @@ for version in v1.0-beta.4 v1.2.3; do
             KOBALT_RELEASE_VERSION="$version" GITHUB_REF="refs/tags/$version" \
             bash "$root/platforms/ci/draft-release.sh"
     )
-    grep -F "release upload $version build/release/Kobalt-android-arm64.apk build/release/Kobalt-qt5.zip build/release/Kobalt-qt6.zip build/release/Kobalt-sources.tar.gz" "$scratch/gh.log" > /dev/null
+    grep -F "release upload $version build/release/Kobalt-android-arm64.apk build/release/ROREADER-qt5.zip build/release/ROREADER-qt6.zip build/release/Kobalt-sources.tar.gz" "$scratch/gh.log" > /dev/null
 done
 echo 'PASS: release helper syntax, versions, source pins and missing signing key'
 # Changes to bundled native libraries require a fresh notice audit.

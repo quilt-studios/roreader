@@ -1,12 +1,12 @@
-Kobalt, an alternative reader for Kobo firmware 4, 5 and 6.
+ROREADER, an alternative reader for Kobo firmware 4, 5 and 6.
 
 The default build opens DRM-free EPUBs, including DRM-free Kobo purchases.
-Nickel checks access; Kobalt reads the unencrypted EPUB resources directly.
+Nickel checks access; ROREADER reads the unencrypted EPUB resources directly.
 Protected books show a short handoff screen, then open in Nickel's reader.
 Previews, PDFs and unsupported formats open directly in Nickel's reader.
 A loading failure offers Try built-in reader or Go back.
 
-Reading Settings has a Kobalt section at the top. Open books in Kobalt
+Reading Settings has a ROREADER section at the top. Open books in ROREADER
 is on after installation. Turn it off to use Nickel's reader for later
 books. The choice is saved in config.json in this folder. Long-press a
 book to open it once with the other reader.
@@ -17,30 +17,30 @@ Layout, Light, Stats and Search. Settings is at the top.
 
 Fonts and their manifest are in assets/. Global preferences are in
 reader-settings.json. Book settings, positions, bookmarks and annotations
-are in kobalt.sqlite. Kobalt also saves your position to Nickel when you
+are in kobalt.sqlite. ROREADER also saves your position to Nickel when you
 leave a book. Existing saved data is imported after an upgrade. Original
 files are kept in migration-backup/; keep that backup until you have
 checked your books. If saved data is damaged or comes from a newer
-version, Kobalt moves it to backups/, starts again from the defaults and
+version, ROREADER moves it to backups/, starts again from the defaults and
 tells you.
 
-To remove Kobalt, delete the file uninstall, or this whole folder, and
+To remove ROREADER, delete the file uninstall, or this whole folder, and
 restart the device. Saved positions and settings stay unless you delete
 the folder. A temporary test build creates uninstall-now and removes
 itself on the next restart. To install a new build over a temporary one,
 delete uninstall-now before you eject.
 
-If Kobalt stops during startup or while a book is open, it leaves
+If ROREADER stops during startup or while a book is open, it leaves
 startup-session or active-session.json here. While either file exists,
-Kobalt stays off and Nickel's reader is used. Look at the logs first,
-then delete the file and restart to try Kobalt again.
+ROREADER stays off and Nickel's reader is used. Look at the logs first,
+then delete the file and restart to try ROREADER again.
 
-Kobalt always keeps an event log in diagnostics/. events.jsonl and
+ROREADER always keeps an event log in diagnostics/. events.jsonl and
 events.jsonl.previous are limited to 128 KiB each. They contain no book
 text or account data. To also write the inspection reports state.json
 and session.json there, create diagnostics-enabled here and restart.
 Those can contain book identifiers; keep them private. Old reports are
 retained under migration-backup/diagnostics/.
 
-When Nickel crashes, Kobalt writes a report in crash-reporting/. It
+When Nickel crashes, ROREADER writes a report in crash-reporting/. It
 keeps the newest 20 reports. They contain no book text.

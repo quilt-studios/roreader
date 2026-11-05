@@ -3,7 +3,7 @@
 
 /* acknowledgments */
 "acknowledgments.acknowledgments" = "Acknowledgments";
-"acknowledgments.kobalt_is_distributed_under_the_gnu_agpl_v3_without_any_warranty" = "Kobalt is distributed under the GNU AGPL v3, without any warranty.";
+"acknowledgments.kobalt_is_distributed_under_the_gnu_agpl_v3_without_any_warranty" = "ROREADER is distributed under the GNU AGPL v3, without any warranty.";
 "acknowledgments.group_author" = "Also by the author";
 "acknowledgments.group_engine" = "Engine";
 "acknowledgments.group_fonts" = "Fonts";
@@ -15,7 +15,7 @@
 
 /* kosync */
 "kosync.title" = "Sync";
-"kosync.description" = "Sync progress with KOReader and Kobalt.";
+"kosync.description" = "Sync progress with KOReader and ROREADER.";
 "kosync.not_set" = "Tap to enter";
 "kosync.server" = "Server URL";
 "kosync.username" = "Username";
@@ -27,7 +27,7 @@
 "kosync.sync_now" = "Sync now";
 "kosync.manual_description" = "With automatic sync disabled, a manual sync button is added to the top toolbar.";
 "kosync.manual_prompt" = "Would you like to sync progress with KOsync?";
-"kosync.manual_prompt_description" = "This button syncs progress when you choose. Automatic sync is disabled, so Kobalt will not sync on open, close, sleep or wake. Later taps sync immediately.";
+"kosync.manual_prompt_description" = "This button syncs progress when you choose. Automatic sync is disabled, so ROREADER will not sync on open, close, sleep or wake. Later taps sync immediately.";
 "kosync.show_password" = "Show";
 "kosync.hide_password" = "Hide";
 "kosync.show_password_accessible" = "Show password";
@@ -39,7 +39,7 @@
 "kosync.opening" = "Syncing…";
 "kosync.completed" = "Sync complete";
 "kosync.cancel_sync" = "Cancel sync";
-"kosync.opening_description" = "Kobalt is syncing your progress. Please wait...";
+"kosync.opening_description" = "ROREADER is syncing your progress. Please wait...";
 "kosync.skipped" = "Sync skipped. Your position is saved locally.";
 "kosync.saved_locally" = "Could not sync. Your position is saved locally.";
 "kosync.syncing" = "Syncing progress…";
@@ -65,8 +65,8 @@
 "kosync.resumed" = "Resumed at the synced position.";
 
 /* app */
-"app.name" = "Kobalt";
-"app.wordmark" = "Kobalt";
+"app.name" = "ROREADER";
+"app.wordmark" = "ROREADER";
 
 /* android */
 
@@ -130,11 +130,11 @@
 "library.remove_book" = "Remove from library";
 "library.remove_book_title" = "Remove from library?";
 "library.remove_book_description" = "The book file and reading progress stay on your device. A book in a library folder comes back when the folder is scanned again.";
-"library.remove_copy_description" = "Kobalt's copy of this book is deleted. Reading progress stays on your device.";
+"library.remove_copy_description" = "ROREADER's copy of this book is deleted. Reading progress stays on your device.";
 "library.remove" = "Remove";
 "library.back" = "Back to library";
 "library.open_failed" = "The book could not be opened.";
-"library.folder_unavailable" = "This folder cannot be read. Add it again to give Kobalt access.";
+"library.folder_unavailable" = "This folder cannot be read. Add it again to give ROREADER access.";
 
 /* about */
 "about.description" = "An alternative EPUB reader with a CREngine renderer and a Qt reading interface, with a focus on speed and an excellent user experience.";
@@ -308,8 +308,8 @@
 "error.opening_interrupted" = "Opening interrupted";
 "error.position_has_no_source_chapter" = "Position has no source chapter";
 "error.position_has_no_source_path" = "Position has no source path";
-"error.profile_already_in_use" = "This profile is open in another Kobalt app. Close it there and try again.";
-"error.profile_storage_failed" = "Kobalt couldn't read its saved data or move it to a backup. The storage may be failing. Repair the file system or reset the device.";
+"error.profile_already_in_use" = "This profile is open in another ROREADER app. Close it there and try again.";
+"error.profile_storage_failed" = "ROREADER couldn't read its saved data or move it to a backup. The storage may be failing. Repair the file system or reset the device.";
 "error.publication_declares_vertical_writing" = "This book uses an unsupported writing mode.";
 "error.publication_exceeds_the_memory_limit" = "Publication exceeds the memory limit";
 "error.publication_layout_inspection_is_incomplete" = "Publication layout inspection is incomplete";
@@ -375,7 +375,7 @@
 "header_footer.learning_pace" = "Learning reading speed";
 /* Arguments: %1, %2 */
 "header_footer.pages_left" = "%1 %2";
-"header_footer.preset.default" = "Kobalt";
+"header_footer.preset.default" = "ROREADER";
 "header_footer.preset.alternative_a" = "Bookish";
 "header_footer.preset.alternative_b" = "Ember";
 "header_footer.preset.custom" = "Custom";
@@ -440,11 +440,11 @@
 
 /* native_ui */
 /* Arguments: %1 is the installed Kobalt version. */
-"native_ui.missing_assets_message" = "Some required assets were not copied correctly. Please reinstall Kobalt.\n\nInstalled version: %1";
-"native_ui.missing_assets_title" = "Kobalt can't start";
+"native_ui.missing_assets_message" = "Some required assets were not copied correctly. Please reinstall ROREADER.\n\nInstalled version: %1";
+"native_ui.missing_assets_title" = "ROREADER can't start";
 "native_ui.could_not_save_reader_preference" = "Could not save reader preference.";
-"native_ui.open_books_in_kobalt" = "Open books in Kobalt";
-"native_ui.read_with_kobalt" = "Read with Kobalt";
+"native_ui.open_books_in_kobalt" = "Open books in ROREADER";
+"native_ui.read_with_kobalt" = "Read with ROREADER";
 "native_ui.read_with_nickel" = "Read with Nickel";
 
 /* opening */
@@ -495,7 +495,7 @@
 "reader.could_not_change_dark_mode" = "Could not change dark mode";
 "reader.could_not_save_reader_settings" = "Could not save reader settings";
 "reader.settings_write_error" = "Disk write error";
-"reader.settings_write_error_description" = "Kobalt could not save your reader settings. Check the available storage space and try again.";
+"reader.settings_write_error_description" = "ROREADER could not save your reader settings. Check the available storage space and try again.";
 "reader.could_not_save_reading_position" = "Could not save reading position";
 "reader.dark_mode" = "Dark mode";
 "reader.debug_progress" = "Debug progress";
@@ -503,7 +503,7 @@
 "reader.duplicate_current_update" = "Duplicate current update";
 "reader.edge_light" = "Swipe along edges to adjust frontlight";
 "reader.enable_page_animations" = "Page turn animations";
-"reader.exit" = "Exit Kobalt";
+"reader.exit" = "Exit";
 "reader.fail_next_native_save" = "Fail next native save";
 "reader.font" = "Font";
 "reader.close_fonts" = "Close fonts";
@@ -631,8 +631,8 @@
 "settings.sans_font" = "Sans-serif typeface";
 "settings.mono_font" = "Monospace typeface";
 "settings.system" = "System";
-"settings.automatic_book_opening" = "Open books automatically in Kobalt";
-"settings.automatic_book_opening_description" = "Use Kobalt when opening supported books from your library. This is the same setting as in Kobo's Reading settings.";
+"settings.automatic_book_opening" = "Open books automatically in ROREADER";
+"settings.automatic_book_opening_description" = "Use ROREADER when opening supported books from your library. This is the same setting as in Kobo's Reading settings.";
 "settings.sleep_screen" = "Sleep screen";
 "settings.session_timeout" = "New session after sleep";
 "settings.session_timeout_description" = "Waking your device after this amount of time starts a new reading session. You do not need to close and reopen your book, this is automatic.";
@@ -692,9 +692,9 @@
 "settings.navigation_menu_hint" = "Tap the middle of the page to open the menu in any mode.";
 "settings.sleep_stock" = "Kobo's built-in sleep screen";
 "settings.sleep_stock_description" = "Default";
-"settings.sleep_cover" = "Kobalt with book cover";
+"settings.sleep_cover" = "ROREADER with book cover";
 "settings.sleep_cover_description" = "Shows the book cover with reading progress and battery status.";
-"settings.sleep_page" = "Kobalt with reading page";
+"settings.sleep_page" = "ROREADER with reading page";
 "settings.sleep_page_description" = "Dims the current page and shows reading progress and battery status.";
 "settings.sleep_tile" = "Sleep screen style";
 "settings.sleep_tile_card" = "Card";
@@ -831,9 +831,9 @@
 "opening.protected" = "This book is protected.";
 "opening.continuing" = "Continuing automatically";
 "opening.failed" = "Couldn't open this book";
-"opening.failed_detail" = "Kobalt couldn't read this EPUB. You can try opening it in Kobo's built-in reader.";
-"opening.storage_failed" = "Kobalt can't use its saved data";
-"opening.storage_failed_detail" = "Kobalt couldn't read its saved data or move it to a backup. The storage may be failing. Repair the file system or reset the device. Kobalt will close now.";
+"opening.failed_detail" = "ROREADER couldn't read this EPUB. You can try opening it in Kobo's built-in reader.";
+"opening.storage_failed" = "ROREADER can't use its saved data";
+"opening.storage_failed_detail" = "ROREADER couldn't read its saved data or move it to a backup. The storage may be failing. Repair the file system or reset the device. ROREADER will close now.";
 "opening.try_native" = "Try built-in reader";
 "opening.go_back" = "Go back";
 
@@ -847,9 +847,9 @@
 "benchmark.not_saved" = "The results could not be saved.";
 "benchmark.no_scenarios" = "No scenarios ran. Check the scenario file and its filter.";
 "benchmark.connect" = "Connect the Kobo to a computer and open %1 to see the results.";
-"recovery.settings" = "Kobalt's settings could not be used, so the defaults are back in use.";
+"recovery.settings" = "ROREADER's settings could not be used, so the defaults are back in use.";
 "recovery.sync_account" = "The sync account could not be used. Sign in again to keep syncing.";
-"recovery.database" = "Kobalt's reading positions, bookmarks and annotations could not be used. Kobalt started again with empty saved data.";
+"recovery.database" = "ROREADER's reading positions, bookmarks and annotations could not be used. ROREADER started again with empty saved data.";
 "recovery.backups" = "The original files are in %1.";
 
 "reader.supplemental_fonts" = "Supplemental Fonts";
@@ -899,9 +899,9 @@
 "reader.bionic_weight_locked" = "Bold reading";
 
 /* Arguments: %1 installed version */
-"native_ui.recovered_assets_message" = "Filesystem damage was detected, or a file was not transferred correctly. Please reinstall Kobalt and try again.\n\nInstalled version: %1";
+"native_ui.recovered_assets_message" = "Filesystem damage was detected, or a file was not transferred correctly. Please reinstall ROREADER and try again.\n\nInstalled version: %1";
 
-"native_ui.removing_kobalt" = "Removing Kobalt";
+"native_ui.removing_kobalt" = "Removing ROREADER";
 "native_ui.restarting_device" = "Restarting your device...";
 
 "reader.lock_portrait" = "Lock portrait";
@@ -919,7 +919,7 @@
 "settings.inherit_header_footer_description" = "New books start with the last book's header and footer. Books with saved settings keep them.";
 
 "settings.avoid_wasteful_styling" = "Reduce publisher spacing";
-"settings.avoid_wasteful_styling_description" = "Use Kobalt's page margins and reduce blank space at chapter starts.";
+"settings.avoid_wasteful_styling_description" = "Use ROREADER's page margins and reduce blank space at chapter starts.";
 "settings.avoid_wasteful_styling_changes" = "What this changes:";
 "settings.avoid_wasteful_styling_margins" = "Ignores the book's own page margins and padding, so your Layout margins apply.";
 "settings.avoid_wasteful_styling_breaks" = "Removes the space a book adds above text that starts on a new page, such as a chapter opening.";
@@ -1003,7 +1003,7 @@
 "settings.menu_view_none" = "Default";
 "settings.menu_view_seek" = "Navigate Mode";
 "settings.menu_view_stats" = "Stats Mode";
-"settings.menu_view_none_description" = "Tapping in the middle of the screen simply opens the basic reading menu. Nothing special. Kobalt's default.";
+"settings.menu_view_none_description" = "Tapping in the middle of the screen simply opens the basic reading menu. Nothing special. ROREADER's default.";
 "settings.menu_view_seek_description" = "Shows page thumbnails and advanced book navigation controls. For those who would normally use the Navigate tab.";
 "settings.menu_view_stats_description" = "Shows chapter and book statistics above the tab bar, as you would normally find using the Stats tab.";
 
@@ -1124,7 +1124,7 @@
 "kosync.sideload_copy" = "To use KOsync, download a DRM-free copy of the book and add it to your device separately.";
 "kosync.learn_more" = "Learn More";
 "kosync.learn_more_title" = "Kobo sync and KOsync";
-"kosync.learn_more_description" = "Kobo-managed books use Kobo’s built-in sync, even when the file has no DRM. Kobalt leaves their progress syncing to Kobo.\n\nKOsync is a separate service for KOReader and Kobalt. To use it for this title, add a DRM-free copy to your device as a separate sideloaded book and open that copy.\n\nUse the same book file on every device. Only reading progress is synced; books, bookmarks and annotations are not transferred.";
+"kosync.learn_more_description" = "Kobo-managed books use Kobo’s built-in sync, even when the file has no DRM. ROREADER leaves their progress syncing to Kobo.\n\nKOsync is a separate service for KOReader and ROREADER. To use it for this title, add a DRM-free copy to your device as a separate sideloaded book and open that copy.\n\nUse the same book file on every device. Only reading progress is synced; books, bookmarks and annotations are not transferred.";
 
 "kosync.device_name" = "Device name";
 "kosync.device_name_saved" = "Device name saved.";

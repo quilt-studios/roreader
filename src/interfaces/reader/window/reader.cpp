@@ -1,4 +1,5 @@
 #include "interfaces/reader/ui/controls/buttons.h"
+#include "interfaces/reader/tools/tools_panel.h"
 #include "interfaces/reader/ui/controls/icons.h"
 #include "interfaces/reader/ui/controls/paging.h"
 #include "interfaces/reader/ui/controls/panels.h"
@@ -148,6 +149,7 @@ void Reader::prepareUsb(std::function<void()> finished) {
     prepareTransition(std::move(finished), true);
 }
 void Reader::prepareTransition(std::function<void()> finished, bool usb) {
+    stopTools(this);
     book->retryFailedReadingSave();
     const auto request = ++closeRequest;
     setProperty("reader_transition_save_failed", false);
@@ -340,6 +342,7 @@ sleep::Snapshot Reader::captureSleepScreen() {
 }
 
 void Reader::sleepReader() {
+    stopTools(this);
     // The device is going to sleep; no tap can turn the page until it wakes.
     mainthread::AllowBlocking allow("sleep");
     book->retryFailedReadingSave();
@@ -532,7 +535,7 @@ void Reader::progressTick() {
 
 QVector<QWidget *> Reader::popups() const {
     // Header and footer and the field list cover the panels, under every other pop-up.
-    return {annotationPopover,
+    return {findChild<QWidget *>("rrTools", Qt::FindDirectChildrenOnly), annotationPopover,
             headerFooterView,
             fieldChooser,
             busyNotice,
@@ -1019,6 +1022,7 @@ void Reader::resizeEvent(QResizeEvent *) {
 }
 
 void Reader::closeEvent(QCloseEvent *event) {
+    if (!closing && dismissTools(this)) { event->ignore(); return; }
     model->cancelPendingTurn();
     appearanceEdit.clearContinuation();
     closeSearch();
@@ -1869,6 +1873,8 @@ bool Reader::pageList(int direction) {
         auto *view = children[index];
         if (!view->isVisible())
             continue;
+        if (view->objectName() == QLatin1String("rrTools"))
+            return true;
         const auto *modal = dynamic_cast<ui::ModalOverlay *>(view);
         if ((modal && modal->inputBarrier()) || view == choices || view == bookmarkList || view == searchPanel ||
             view == acknowledgments || view == fieldChooser || view == headerFooterView || view == dictionaryPanel ||
@@ -2202,7 +2208,7 @@ void Reader::cancelExit() {
     refresh();
 }
 bool Reader::pendingStorageSave() const {
-    return book->savesPending() || book->readingSavePending() || bookmarks->saving() || highlights->saving() || annotationSaving ||
+    return toolsBusy(this) || book->savesPending() || book->readingSavePending() || bookmarks->saving() || highlights->saving() || annotationSaving ||
            (reportWriter && !reportWriter->idle());
 }
 void Reader::finishStorageSave(std::function<void(bool)> finished, bool nativeAllowed) {
@@ -2299,6 +2305,7 @@ void Reader::runIdleSave(bool beforeStandby) {
 }
 
 bool Reader::flushBeforeStandby() {
+    if (toolsBusy(this)) return false;
     // Standby pauses Qt timers. Let the visible confirmation dismiss first.
     auto *notice = dynamic_cast<KosyncNotice *>(kosyncDialog.data());
     if (!lifecycleHidden && notice && notice->completing())

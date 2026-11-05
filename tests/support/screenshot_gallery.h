@@ -14,6 +14,7 @@
 
 namespace kobalt::test {
 inline QString screenshotGroup(const QString &scene) {
+    if (scene.startsWith("tools-")) return "ROREADER tools";
     if (scene.startsWith("international-")) return "International books";
     if (scene.startsWith("library-") || scene.startsWith("widget-keyboard")) return "Library";
     if (scene == "dictionaries" || scene.startsWith("dictionary-")) return "Dictionary";
@@ -40,7 +41,13 @@ inline QString screenshotTitle(const QString &scene, const QJsonObject &book) {
         return language + " · " + panel + (vertical ? " (vertical)" : "");
     }
     static const QMap<QString, QString> titles{
-        {"about", "About Kobalt"},
+        {"about", "About ROREADER"},
+        {"tools-entry", "Open ROREADER tools"},
+        {"tools-terminal", "Terminal"},
+        {"tools-sketchpad", "Sketchpad"},
+        {"tools-editor", "Text editor"},
+        {"tools-keyboard", "Text editor keyboard"},
+        {"tools-discard", "Keep or discard drafts"},
         {"acknowledgments", "Acknowledgments"},
         {"alice-reading", "Alice in Wonderland"},
         {"annotating", "Annotation mode"},

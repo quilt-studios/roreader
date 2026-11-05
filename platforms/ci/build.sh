@@ -20,8 +20,8 @@ if [[ $1 == android ]]; then
     cp "$package" "$package.signing.txt" build/release/
 else
     bash platforms/kobo/build.sh "$1"
-    package="build/kobo-$1/Kobalt-$1.zip"
-    cp "$package" build/release/
+    package="build/kobo-$1/ROREADER-$1.zip"
+    cp "$package" "$package.sha256" build/release/
 fi
 jq -n --arg version "$version" --arg target "$1" --arg commit "$(git rev-parse HEAD)" \
     --arg sdk "$image" --arg sha "$(shasum -a 256 "$package" | awk '{print $1}')" \

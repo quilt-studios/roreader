@@ -65,7 +65,8 @@ protected:
                                                                             : QPalette::WindowText));
         const auto bounds = contentsRect().adjusted(margin(), margin(), -margin(), -margin());
         // Font line boxes include padding above and below the visible letters.
-        ui::drawOpticalText(painter, bounds.translated(0, m::chrome::returnTitleOffset), text(), true);
+        // Keep the caption anchored to the arrow when its wording changes.
+        ui::drawOpticalText(painter, bounds.translated(0, m::chrome::returnTitleOffset), text(), false);
     }
 };
 class ReturnButton final : public ui::Button {

@@ -1,5 +1,5 @@
 # Copies an evaluation package onto a Kobo connected over USB.
-#   cmake -DPACKAGE=build/kobo-qt5-eval/Kobalt-qt5-eval.zip -DDEVICE=/Volumes/KOBOeReader
+#   cmake -DPACKAGE=build/kobo-qt5-eval/ROREADER-qt5-eval.zip -DDEVICE=/Volumes/KOBOeReader
 #       -P platforms/kobo/install-eval.cmake
 if(NOT DEFINED PACKAGE OR NOT DEFINED DEVICE)
     message(FATAL_ERROR "PACKAGE and DEVICE are required")

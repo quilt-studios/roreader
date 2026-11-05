@@ -9,6 +9,7 @@
 #include "interfaces/reader/ui/style/theme.h"
 #include "interfaces/reader/ui/panel_timing.h"
 #include "settings_panel.h"
+#include "interfaces/reader/tools/tools_panel.h"
 #include "interfaces/reader/panels/dictionary_panel.h"
 #include "reading/appearance_settings.h"
 #include "support/strings.h"
@@ -555,6 +556,9 @@ SettingsPanel::SettingsPanel(QWidget *parent, const SettingsPanelInputs &inputs)
                                                     strings::get("settings.dictionary_font_size"), [] {});
     systemRows->addWidget(dictionaryFontButton);
     systemRows->addWidget(dictionaryFontSizeButton);
+    section(systemPage, systemRows, "rrSystemToolsSection", QStringLiteral("ROREADER"));
+    ui::makeCaptionButton(systemPage, systemRows, "rrOpenTools", QStringLiteral("Terminal · Sketchpad · Texteditor"),
+                          [parent, keyboard = inputs.keyboard] { openTools(parent, keyboard); });
     systemRows->addStretch(1);
     auto *aboutPage = new QWidget(settingsPages);
     aboutPage->setObjectName("rrAbout");

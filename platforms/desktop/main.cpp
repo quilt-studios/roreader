@@ -40,6 +40,7 @@ int main(int argc, char **argv) {
     FontCopies copies;
     Application app(argc, argv);
     app.setApplicationName(QStringLiteral(KOBALT_PROFILE_NAME));
+    app.setApplicationDisplayName(QStringLiteral("ROREADER"));
     app.setOrganizationName("Kobalt");
     app.setStyle("Fusion");
     AssetBundle assets(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QStringLiteral(KOBALT_RUNTIME_ASSET_PATH)),

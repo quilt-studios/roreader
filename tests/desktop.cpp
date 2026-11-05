@@ -18,6 +18,7 @@
 #include "platforms/android/reader.h"
 #include "platforms/android/window_geometry.h"
 #include <QStackedLayout>
+#include <QPlainTextEdit>
 #include "platforms/android/boox_frame_queue.h"
 #include "interfaces/library/library_view.h"
 #include "library/library_store.h"
@@ -5976,7 +5977,55 @@ printf '[{"file":"%s.png","scene":"%s"}]' "$3" "$KOBALT_GALLERY_CAPTURE" > "$2/p
 
 class ScreenshotTests final : public QObject {
     Q_OBJECT
+    void captureTools(Fixture &fixture, const QString &name) {
+        QVERIFY(fixture.press("rrSettingsSystem"));
+        QVERIFY(revealSettingsOption(fixture, "rrOpenTools"));
+        QVERIFY(capture(fixture, name + "-tools-entry"));
+        QVERIFY(fixture.press("rrOpenTools"));
+        QTRY_VERIFY(fixture.visible("rrTools"));
+        QVERIFY(capture(fixture, name + "-tools-terminal"));
+        QVERIFY(fixture.press("rrToolsSketch"));
+        auto *canvas = fixture.widget("rrSketchCanvas");
+        QVERIFY(canvas);
+        QTest::mousePress(canvas, Qt::LeftButton, Qt::NoModifier, QPoint(100, 100));
+        QTest::mouseMove(canvas, QPoint(250, 200));
+        QTest::mouseMove(canvas, QPoint(400, 100));
+        QTest::mouseRelease(canvas, Qt::LeftButton, Qt::NoModifier, QPoint(400, 100));
+        QVERIFY(capture(fixture, name + "-tools-sketchpad"));
+        QVERIFY(fixture.press("rrToolsEditor"));
+        auto *editor = qobject_cast<QPlainTextEdit *>(fixture.widget("rrTextDocument"));
+        QVERIFY(editor);
+        editor->setPlainText(QStringLiteral("ROREADER\n\nIdeen, Notizen und Geschichten.\nDirekt auf deinem Reader."));
+        QVERIFY(capture(fixture, name + "-tools-editor"));
+        QVERIFY(fixture.press("rrTextKeyboard"));
+        auto *keyboard = fixture.widget("rrTools")->findChild<QWidget *>("widgetKeyboard");
+        QTRY_VERIFY(keyboard && keyboard->isVisible());
+        QVERIFY(capture(fixture, name + "-tools-keyboard"));
+        QVERIFY(fixture.press("rrToolsInputCancel"));
+        QTRY_VERIFY(!fixture.visible("rrToolsInputDialog"));
+        QVERIFY(fixture.press("rrToolsClose"));
+        QTRY_VERIFY(fixture.visible("rrToolsDiscard"));
+        QVERIFY(capture(fixture, name + "-tools-discard"));
+        QVERIFY(fixture.press("rrToolsDiscard"));
+        QTRY_VERIFY(!fixture.visible("rrTools"));
+    }
 private slots:
+    void tools_data() { screenshotVariants(); }
+    void tools() {
+        QFETCH(int, preset);
+        QFETCH(bool, dark);
+        Fixture fixture(dark, false, true);
+        QVERIFY(fixture.prepared);
+        fixture.window.findChild<QComboBox *>("desktopScreenPicker")->setCurrentIndex(preset);
+        QSignalSpy opened(&fixture.window, &desktop::Window::bookOpened);
+        fixture.window.openBook(book);
+        QTRY_COMPARE_WITH_TIMEOUT(opened.count(), 1, 30000);
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        openPrologueBody(fixture);
+        QVERIFY(fixture.press("rrPage"));
+        QVERIFY(fixture.press("rrSettings"));
+        captureTools(fixture, screenshotVariant(preset, dark));
+    }
     void headerFooterSizes_data() { screenshotVariants(); }
     void headerFooterSizes() {
         QFETCH(int, preset);
@@ -6095,6 +6144,8 @@ private slots:
         QVERIFY(fixture.press("rrFontClose"));
         QVERIFY(scene("rrNavLayout", "rrHeaderFooter", "layout"));
         QVERIFY(scene("rrSettings", "rrGeneralSettings", "settings"));
+        captureTools(fixture, name);
+        if (QTest::currentTestFailed()) return;
         QVERIFY(fixture.press("rrSettingsClose"));
         if (!fixture.visible("rrBookmarks")) QVERIFY(fixture.press("rrPage"));
         QVERIFY(scene("rrBookmarks", "rrBookmarkList", "bookmarks"));
@@ -7126,7 +7177,7 @@ int main(int argc, char **argv) {
     // full gallery's manifest tells which cases capture them.
     const auto selectedScenes = qEnvironmentVariable("KOBALT_GALLERY_SCENE").split(',', Qt::SkipEmptyParts);
     QMap<QString, QStringList> selection;
-    int expectedScreenshots = lightGallery ? 84 : 1262;
+    int expectedScreenshots = lightGallery ? 120 : 1298;
     if (screenshots) {
         if ((arguments.size() != 3 && !lightGallery) || !QDir::isAbsolutePath(arguments.at(2))) {
             qCritical() << "Usage: kobalt-desktop-tests --screenshots ABSOLUTE_DIRECTORY [--light]";

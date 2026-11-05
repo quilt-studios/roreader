@@ -164,12 +164,12 @@ if(NOT desktop_variant MATCHES "^[A-Za-z0-9-]*$")
     message(FATAL_ERROR "${variant_option} may only hold letters, digits and hyphens.")
 endif()
 if(desktop_variant)
-    set(KOBALT_BUNDLE_NAME "Kobalt (${desktop_variant})")
+    set(KOBALT_BUNDLE_NAME "ROREADER (${desktop_variant})")
     set(KOBALT_BUNDLE_IDENTIFIER "com.nicoverbruggen.kobalt.desktop.variant.${desktop_variant}")
     set(KOBALT_PROFILE_NAME "Kobalt-${desktop_variant}")
     set(KOBALT_DOCUMENT_TYPES "")
 else()
-    set(KOBALT_BUNDLE_NAME "Kobalt")
+    set(KOBALT_BUNDLE_NAME "ROREADER")
     set(KOBALT_BUNDLE_IDENTIFIER "com.nicoverbruggen.kobalt.desktop")
     set(KOBALT_PROFILE_NAME "Kobalt")
     set(KOBALT_DOCUMENT_TYPES "<key>CFBundleDocumentTypes</key><array><dict>
@@ -195,9 +195,9 @@ set_target_properties(Kobalt PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in")
 set(resources "${KOBALT_ROOT}/assets")
 file(GLOB notices CONFIGURE_DEPENDS "${resources}/notices/*")
-qt_add_resources(kobalt-desktop desktop_artwork PREFIX "/desktop" BASE "${resources}" FILES "${resources}/kobalt-android.svg")
+qt_add_resources(kobalt-desktop desktop_artwork PREFIX "/desktop" BASE "${resources}" FILES "${resources}/roreader-icon.png")
 qt_add_resources(kobalt-desktop notices PREFIX "/kobalt" BASE "${resources}" FILES "${resources}/acknowledgments.json" ${notices}
-    "${resources}/samples/words-and-letters.html" "${resources}/samples/layout.html")
+    "${resources}/samples/words-and-letters.html" "${resources}/samples/layout.html" "${resources}/roreader-icon.png")
 if(APPLE)
     set(bundle_assets "${CMAKE_CURRENT_BINARY_DIR}/Kobalt.app/Contents/Resources/assets")
     add_custom_command(OUTPUT "${bundle_assets}/manifest.json"
@@ -254,6 +254,14 @@ if(BUILD_TESTING)
         KOBALT_TEST_VARIABLE_FONT="${test_variable_font}" KOBALT_BUILD_TYPE="${CMAKE_BUILD_TYPE}")
     file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test-tmp")
     set(headless_environment "QT_QPA_PLATFORM=minimal:enable_fonts:freetype" "QT_STYLE_OVERRIDE=Fusion" "TMPDIR=${CMAKE_CURRENT_BINARY_DIR}/test-tmp")
+    add_executable(roreader-tools-tests "${KOBALT_ROOT}/tests/roreader_tools.cpp")
+    target_link_libraries(roreader-tools-tests PRIVATE kobalt-desktop kobalt-core Qt6::Test)
+    add_test(NAME desktop.roreaderTools COMMAND "${CMAKE_COMMAND}"
+        "-DTEST_EXECUTABLE=$<TARGET_FILE:roreader-tools-tests>"
+        "-DTEST_TIMEOUT=60" "-DTEST_TMP_ROOT=${CMAKE_CURRENT_BINARY_DIR}/test-tmp"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/run-test.cmake")
+    set_tests_properties(desktop.roreaderTools PROPERTIES ENVIRONMENT "${headless_environment}" LABELS "desktop;light" TIMEOUT 65)
+    add_dependencies(kobalt-desktop-tests roreader-tools-tests)
     foreach(check annotationDefaultView galleryWorkerFailure galleryIntegrity sameProcessReadersDoNotRecoverEachOther standaloneHistorySourceKeys verticalJustification startup libraryOnboarding reading errors diagnostics storageDiagnostics timingEvents features stylesheet bookmarks bookmarkMerge annotations annotationModeFeedback annotationSelection coordinateProbeSerialization annotationGripMenus annotationCrossPageDrag selectionCrossPageDrag annotationCrossPageOverlap annotationOverlap touchCursor touchCursorOutsideReader links footnoteHitTargets footnoteHighlightShapes revealedLinkPress tappableLinks bookmarkCornerLinks
             annotationSectionBoundary headerFooterSizes batteryPercentageOnly headerFooterDismissal settings publisherFontDefault advancedText globalLayout columns fullWidthPanels dictionaryRedraw dictionaryAppearance dictionaryEditing dictionaryDismissal opticalSize desktopControls navigation largeInterfaceScale largeInterfaceScaleLongExit bookmarkReturn booxMenuDismissalRefresh booxRetirementFrame annotationTwoFingerTapConsumesWholeSequence annotationRightClickRejectsChords library libraryTextInheritance libraryGridRows libraryHold libraryScanningCaption libraryAtStart)
         set(lane fast)

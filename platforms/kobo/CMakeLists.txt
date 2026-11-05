@@ -141,7 +141,7 @@ set(resources "${KOBALT_ROOT}/assets")
 file(GLOB notices CONFIGURE_DEPENDS "${resources}/notices/*")
 set(qrc "<RCC><qresource prefix=\"/kobalt\">")
 foreach(path "${resources}/acknowledgments.json" ${notices}
-        "${resources}/samples/words-and-letters.html" "${resources}/samples/layout.html")
+        "${resources}/samples/words-and-letters.html" "${resources}/samples/layout.html" "${resources}/roreader-icon.png")
     file(RELATIVE_PATH alias "${resources}" "${path}")
     string(APPEND qrc "<file alias=\"${alias}\">${path}</file>")
 endforeach()
@@ -153,7 +153,7 @@ else()
     qt6_add_resources(compiled_resources "${CMAKE_CURRENT_BINARY_DIR}/notices.qrc")
 endif()
 target_sources(kobalt PRIVATE ${compiled_resources})
-set(package_file "${CMAKE_CURRENT_BINARY_DIR}/Kobalt-qt${KOBALT_QT_MAJOR}${package_suffix}.zip")
+set(package_file "${CMAKE_CURRENT_BINARY_DIR}/ROREADER-qt${KOBALT_QT_MAJOR}${package_suffix}.zip")
 add_custom_command(OUTPUT "${package_file}"
     COMMAND "${CMAKE_COMMAND}" "-DLIBRARY=$<TARGET_FILE:kobalt>" "-DSTRIP=${CMAKE_STRIP}"
         "-DASSETS=${KOBALT_ASSETS}" "-DQT_MAJOR=${KOBALT_QT_MAJOR}" "-DOUTPUT=${package_file}"

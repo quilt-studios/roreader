@@ -53,32 +53,22 @@ class ToolbarLogo final : public QWidget {
 public:
     explicit ToolbarLogo(QWidget *parent) : QWidget(parent) {
         setObjectName("desktopLogo");
-        setAccessibleName(tr("Kobalt"));
+        setAccessibleName(tr("ROREADER"));
         setFixedSize(28, 28);
         initializeDesktopArtwork();
-        QFile artwork(":/desktop/kobalt-android.svg");
-        if (artwork.open(QIODevice::ReadOnly))
-            svg = lunasvg::Document::loadFromData(artwork.readAll().toStdString());
+        image = QImage(QStringLiteral(":/desktop/roreader-icon.png"));
     }
 
 protected:
     void paintEvent(QPaintEvent *) override {
-        if (!svg)
+        if (image.isNull())
             return;
-        const qreal dpr = devicePixelRatioF();
-        if (image.isNull() || image.devicePixelRatio() != dpr) {
-            auto bitmap = svg->renderToBitmap(qRound(width() * dpr), qRound(height() * dpr));
-            image = QImage(bitmap.data(), bitmap.width(), bitmap.height(), bitmap.stride(),
-                           QImage::Format_ARGB32_Premultiplied)
-                        .copy();
-            image.setDevicePixelRatio(dpr);
-        }
         QPainter painter(this);
-        painter.drawImage(QPoint(), image);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.drawImage(rect(), image);
     }
 
 private:
-    std::unique_ptr<lunasvg::Document> svg;
     QImage image;
 };
 class DeviceButton final : public QPushButton {
@@ -346,7 +336,7 @@ Window::Window(storage::Paths paths, EngineFontInputs fonts, QString placeholder
     open->setShortcut(QKeySequence::Open);
     auto *folder = file->addAction(tr("Add Library Folder…"), this, &Window::chooseFolder);
     folder->setObjectName("desktopAddFolder");
-    auto *quit = file->addAction(tr("Quit Kobalt"), this, &QWidget::close);
+    auto *quit = file->addAction(tr("Quit ROREADER"), this, &QWidget::close);
     quit->setShortcut(QKeySequence::Quit);
     quit->setMenuRole(QAction::QuitRole);
     auto *view = menuBar()->addMenu(tr("&View"));
@@ -485,7 +475,7 @@ QString Window::saveScreenshot(const QString &directory, QString *error) {
             stage->render(&painter);
         }
     }
-    const auto name = tr("Kobalt Screenshot %1 XXXXXX.png")
+    const auto name = tr("ROREADER Screenshot %1 XXXXXX.png")
                           .arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd HH.mm.ss")));
     QTemporaryFile file(QDir(directory).filePath(name));
     if (!file.open()) {
