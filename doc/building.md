@@ -85,7 +85,9 @@ Linux provides the same light, fast, integration and full test lanes, performanc
 
 ## ROREADER utilities and Windows installer
 
-The native reader's System settings open the integrated Terminal, Sketchpad and Text editor. File operations run on utility workers; reader sleep and USB transitions wait for pending utility writes. The shell is a bounded command console, not a PTY or full-screen terminal emulator. Documents are kept separately from reading profiles in `/mnt/onboard/ROREADER/` on devices, and the desktop Documents/ROREADER folder. Existing plugin and profile identities remain unchanged.
+The native reader's toolbar and System settings open the integrated tools. The toolbar also provides a day/night shortcut through the reader's existing preference writer. Terminal, Sketchpad, Text editor, Files, Device/Mods and Games share rounded controls and the reader's typography and palette. File operations run on utility workers; reader sleep and USB transitions wait for pending utility writes. The shell is a bounded command console with history, working-directory retention and stdin support, not a PTY or full-screen terminal emulator. Documents are kept separately from reading profiles in `/mnt/onboard/ROREADER/` on devices, and the desktop Documents/ROREADER folder. Existing plugin and profile identities remain unchanged.
+
+The sketch canvas uses pressure-aware smoothed paths, small damage regions and coalesced updates; its backing image and undo history are bounded. Screen-paper aspect ratio is preserved during display and PNG import/export. Actual stylus pressure delivery and E-Ink latency require a physical-device check. Game rules live independently of their Qt views; Tic-Tac-Toe, solvable Sudoku transformations and the Memory turn lifecycle are covered by the utility suite. Document backups never open the live reading database.
 
 `linux-light-tests` builds the utility checks together with the desktop checks. Run `ctest --preset linux-light -R roreaderTools` for file round trips, write conflicts, shell cancellation, drawing and touch-keyboard entry. The light and full galleries both include the utilities, entry row, keyboard and draft confirmation in all device-size and theme variants.
 
@@ -98,6 +100,8 @@ cmake -DROOT="$PWD" -DPACKAGE_FILE="$PWD/build/kobo-qt6/ROREADER-qt6.zip" -P pla
 This creates `build/installer/ROREADER-Windows-Installer.zip` with its checksum sidecar. Extract the archive on Windows and run its BAT to open Chrome; the bundled package loads automatically. The user chooses the USB device's root directory through File System Access. The PowerShell server binds only to loopback and serves an explicit file list. It has no write API. The browser validates ZIP paths, CRCs, the expected SHA-256 and firmware family, writes assets before the activation archive, verifies readback, and attempts to restore overwritten files after an error. An existing update archive blocks installation. Firmware-family detection does not certify model compatibility or complete device installation.
 
 Run `node tests/installer.test.mjs` from the root for the ZIP and firmware checks. Native Linux tests and headless Chromium checks do not establish Windows batch-launch behavior or physical-device compatibility.
+
+For a static Pages build, run `node platforms/installer/build-site.mjs --package build/kobo-qt6/ROREADER-qt6.zip --output build/pages` from the root. The package sidecar must match. The builder copies the shared UI and verified package using relative URLs, including at a project subpath. `.github/workflows/pages.yml` verifies the checked-in Windows ZIP, extracts its device package and deploys the generated site through the Pages artifact workflow. It deploys from `main` and the active feature branch while the initial PR remains open. Use `node tests/installer.site.test.mjs` and `node tests/installer.browser.mjs` (with Playwright installed) for build and browser regressions.
 
 ## Assets
 

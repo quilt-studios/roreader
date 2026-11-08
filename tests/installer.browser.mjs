@@ -9,11 +9,14 @@ import assert from 'node:assert/strict';
 const root = fileURLToPath(new URL('..', import.meta.url)).replace(/\/$/, '');
 const archive = Buffer.from(zip([['.adds/kobalt/assets/manifest.json', '{}'], ['.kobo/Kobo.tgz', 'test system archive']], 8));
 const checksum = createHash('sha256').update(archive).digest('hex');
+const requests = [];
 const routes = {'/':['platforms/installer/index.html','text/html'], '/app.js':['platforms/installer/app.js','text/javascript'], '/zip.js':['platforms/installer/zip.js','text/javascript'], '/style.css':['platforms/installer/style.css','text/css'], '/logo.png':['assets/roreader-icon.png','image/png']};
 const server = createServer(async (request, response) => {
-  if (request.url === '/package.zip') { response.end(archive); return; }
-  if (request.url === '/package.sha256') { response.end(checksum + '  ROREADER-qt6.zip'); return; }
-  const spec = routes[request.url];
+  requests.push(request.url);
+  const path = request.url.startsWith('/roreader/') ? request.url.slice('/roreader'.length) : request.url;
+  if (path === '/package.zip') { response.end(archive); return; }
+  if (path === '/package.sha256') { response.end(checksum + '  ROREADER-qt6.zip'); return; }
+  const spec = routes[path];
   if (!spec) { response.writeHead(404); response.end(); return; }
   response.setHeader('Content-Type', spec[1]); response.end(await readFile(root + '/' + spec[0]));
 });
@@ -58,4 +61,17 @@ try {
   assert.equal(await page.locator('#install').isDisabled(),true);
   assert.deepEqual(errors,[]);
   console.log('PASS: Unsupported firmware is rejected; no browser script errors');
+  requests.length = 0;
+  await page.goto(url + 'roreader/');
+  await page.getByText('Beiliegendes ROREADER-Paket ·').waitFor();
+  assert.ok(requests.includes('/roreader/package.zip'));
+  assert.ok(requests.includes('/roreader/package.sha256'));
+  assert.ok(requests.includes('/roreader/logo.png'));
+  assert.ok(!requests.includes('/package.zip'));
+  await page.locator('#device').click();
+  await page.locator('#backup').check();
+  await page.locator('#install').click();
+  await page.locator('#result').filter({hasText:'vollständig kopiert und geprüft'}).waitFor();
+  assert.deepEqual(errors,[]);
+  console.log('PASS: Project Pages subdirectory uses relative assets and installs correctly');
 } finally { await browser.close(); await new Promise(resolve=>server.close(resolve)); }

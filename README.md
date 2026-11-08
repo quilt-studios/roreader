@@ -4,21 +4,32 @@
 
 # ROREADER
 
-**Ein EPUB-Reader mit Terminal, Sketchpad und Texteditor für Kobo und kompatible tolino-Geräte.**
+**Ein EPUB-Reader mit Werkzeugen, Sketchpad und Offline-Spielen für Kobo und kompatible tolino-Geräte.**
 
 ROREADER baut auf Kobalt auf und verwendet dessen Qt-Oberfläche und CREngine-Renderer. Du kannst DRM-freie EPUBs lesen, Zeichnungen anfertigen, Textdateien bearbeiten und Shell-Kommandos direkt auf dem Reader ausführen. Geschützte Bücher, PDFs und andere nicht unterstützte Formate werden weiterhin vom eingebauten Reader geöffnet.
 
 ## Werkzeuge auf dem Gerät
 
-Öffne in einem Buch **Einstellungen → System → Terminal · Sketchpad · Texteditor**.
+Tippe im Lesemenü auf das **Werkzeug-Symbol**. Alternativ: **Einstellungen → System → Terminal · Sketchpad · Texteditor**. Der Tag-/Nacht-Schalter im Lesemenü wechselt das Design ohne den Umweg über die Einstellungen.
 
 | Werkzeug | Funktionen |
 | --- | --- |
-| Terminal | Shell-Kommandos mit sichtbarer Ausgabe, Bildschirmtastatur und Stopptaste. Jeder Befehl läuft separat, maximal 60 Sekunden und mit begrenzter Ausgabe. Interaktive Vollbildprogramme wie `vi` werden nicht unterstützt. |
-| Sketchpad | Mit Finger oder Maus zeichnen, radieren, rückgängig machen und als PNG speichern. |
-| Texteditor | UTF-8-Dateien öffnen und atomar speichern, Text per Bildschirmtastatur einfügen, neue Zeilen und Rückgängig. Dateien bis 1 MiB. Extern geänderte oder ungeöffnet vorhandene Dateien werden nicht still überschrieben. |
+| Terminal | Befehlsverlauf, bleibender Arbeitsordner nach `cd`, Eingabe an laufende Programme, UTF-8-Ausgabe und Textexport. Jeder Befehl läuft maximal 60 Sekunden mit begrenzter Ausgabe. Interaktive Vollbildprogramme wie `vi` benötigen eine PTY und werden nicht unterstützt. |
+| Sketchpad | Geglättete Linien, wählbare Stiftbreite, Grau/Schwarz, Radierer, Rückgängig und Wiederholen. Touch und gemeldeter Stiftdruck werden verarbeitet. PNGs öffnen und neue Zeichnungen exportieren. Änderungen werden für kleine Neuzeichenbereiche gebündelt; die echte Reaktionszeit hängt von Gerät und E-Ink-Treiber ab. |
+| Texteditor | UTF-8-Dateien einschließlich BOM öffnen und atomar speichern, Suche, Bildschirmtastatur, neue Zeilen und Rückgängig. Dateien bis 1 MiB. Extern geänderte oder ungeöffnet vorhandene Dateien werden nicht still überschrieben. |
+| Dateien | Dateien im ROREADER-Dokumentordner öffnen, umbenennen, nach Bestätigung löschen oder ihre SHA-256-Prüfsumme anzeigen. PNGs öffnen im Sketchpad, Textdateien im Editor. |
+| Gerät / Mods | Firmware-, Qt-, System-, Akku- und Speicherinformationen, Diagnoseexport, lokale Diagnosebefehle und Sicherungen der ROREADER-Dokumente. Keine automatischen Firmware-Patches. |
+| Spiele | Tic-Tac-Toe gegen den Reader oder zu zweit, Sudoku mit Konfliktprüfung und Tipps sowie Memory. Alles offline; Spielstände bleiben während der geöffneten Werkzeuge im Speicher. |
 
 Texte und Zeichnungen liegen auf dem Reader in **`/mnt/onboard/ROREADER/`**, also im Ordner **`ROREADER`** auf dem USB-Laufwerk. Auf dem Linux-Desktop liegen sie unter `Dokumente/ROREADER`. Ungespeicherte Entwürfe bleiben beim Wechsel zwischen den Werkzeugen erhalten; beim Schließen fragt die Oberfläche nach. Zum dauerhaften Aufbewahren bitte speichern. Shell-Kommandos laufen mit den Rechten des Reader-Prozesses; prüfe Befehle vor dem Ausführen.
+
+**Dokumente sichern** erstellt einen neuen `backup-…`-Ordner mit Dateikopien und SHA-256-Manifest. Diese Sicherung umfasst nur die Dateien im ROREADER-Dokumentordner, nicht die Lesedatenbank, fremde Bücher oder die Firmware. Der Dateimanager zeigt die Dateien dieses Dokumentordners; Sicherungsunterordner lassen sich über USB öffnen. Verlauf und Spielstände werden nicht automatisch auf die SD-Karte geschrieben.
+
+## Online installieren
+
+Die GitHub-Pages-Seite wird aus demselben Installer-Code wie die Windows-Oberfläche gebaut. Öffne sie auf deinem Computer in einer aktuellen Version von **Chrome oder Edge**, verbinde den Reader per USB und wähle sein Hauptverzeichnis über **„Reader-Laufwerk auswählen“**. Eine BAT oder zusätzliche App ist dafür nicht erforderlich. Das bereitgestellte Qt6-Paket wird automatisch heruntergeladen und geprüft; deine Geräte- und Buchdaten werden nicht hochgeladen.
+
+Der Workflow [ROREADER website](.github/workflows/pages.yml) veröffentlicht die Seite über GitHub Pages. Aktiviere dafür einmalig unter **Settings → Pages → Source → GitHub Actions** die Bereitstellung und starte den Workflow. Die tatsächlich verfügbare Adresse steht nach erfolgreicher Bereitstellung im Pages-Deployment des Repositories.
 
 ## Windows: in Chrome installieren
 

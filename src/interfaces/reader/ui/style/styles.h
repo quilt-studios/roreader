@@ -24,7 +24,7 @@ inline QString caption(int pixels = metrics::chrome::captionText) {
 }
 inline QString reader() {
     return QString(
-               "QWidget{font-weight:400;font-family:\"%4\";background:palette(window);color:palette(window-text);} QPushButton{font-size:%1px;min-height:%2px;border:none;padding:%3px;} "
+               "QWidget{font-weight:400;font-family:\"%4\";background:palette(window);color:palette(window-text);} QPushButton{font-size:%1px;min-height:%2px;border:none;border-radius:%5px;padding:%3px;} "
                "QPushButton:pressed{background:palette(midlight);} QPushButton:disabled{color:palette(mid);} QLabel{font-size:%1px;} "
                "QFrame#rrControlsTop,QFrame#rrControlsBottom,QFrame#rrMenu,QFrame#rrGeneralSettings{border:none;} "
                "QPushButton#rrReturn,QPushButton#rrChapters{font-weight:bold;} "
@@ -32,7 +32,8 @@ inline QString reader() {
         .arg(int(metrics::text::body))
         .arg(int(metrics::control::minimumHeight))
         .arg(int(metrics::control::padding))
-        .arg(QStringLiteral("@ui-font-family@"));
+        .arg(QStringLiteral("@ui-font-family@"))
+        .arg(ui::px(16));
 }
 inline QString segment() {
     return QString(

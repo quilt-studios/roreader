@@ -5,6 +5,7 @@
 #include "../style/fonts.h"
 #include "support/strings.h"
 #include <QPainter>
+#include <QPainterPath>
 #include <QResizeEvent>
 #include "../controls/buttons.h"
 #include "../controls/rows.h"
@@ -19,10 +20,17 @@ namespace m = metrics;
 PopupCard::PopupCard(QWidget *parent)
     : Panel(parent, Edges(Qt::TopEdge) | Qt::BottomEdge | Qt::LeftEdge | Qt::RightEdge) {
     setEdgeWidth(2);
+    setCornerRadius(ui::px(20));
     readerStyle(this, styles::popup());
     contentRows = new QVBoxLayout(this);
     contentRows->setContentsMargins(m::notice::cardMargins);
     contentRows->setSpacing(m::notice::cardGap);
+}
+void PopupCard::resizeEvent(QResizeEvent *event) {
+    Panel::resizeEvent(event);
+    QPainterPath shape;
+    shape.addRoundedRect(QRectF(rect()), ui::px(20), ui::px(20));
+    setMask(QRegion(shape.toFillPolygon().toPolygon()));
 }
 QLabel *PopupCard::message(const QString &text, const QString &name) {
     auto *label = new ui::InterfaceLabel(text, this);

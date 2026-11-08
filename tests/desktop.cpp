@@ -1385,6 +1385,35 @@ void checkHeaderFooterSizes(int preset, bool dark) {
 class DesktopTests final : public QObject {
     Q_OBJECT
 private slots:
+    void quickToolsAccess() {
+        Fixture fixture;
+        QVERIFY(fixture.prepared);
+        QSignalSpy opened(&fixture.window, &desktop::Window::bookOpened);
+        fixture.window.openBook(book);
+        QTRY_COMPARE_WITH_TIMEOUT(opened.count(), 1, 30000);
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        QVERIFY(fixture.press("rrPage"));
+        QTRY_VERIFY(fixture.visible("rrQuickTools"));
+        QVERIFY(fixture.visible("rrQuickTheme"));
+        QVERIFY(fixture.press("rrQuickTheme"));
+        QTRY_VERIFY(fixture.state().value("dark_mode").toBool());
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        QVERIFY(fixture.press("rrQuickTheme"));
+        QTRY_VERIFY(!fixture.state().value("dark_mode").toBool());
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        QTRY_VERIFY(fixture.window.readerWindow()->readyForPresentation());
+        auto *quickTools = qobject_cast<QPushButton *>(fixture.widget("rrQuickTools"));
+        QVERIFY(quickTools && quickTools->isEnabled());
+        QSignalSpy toolsClicked(quickTools, &QPushButton::clicked);
+        QVERIFY(fixture.press("rrQuickTools"));
+        QCOMPARE(toolsClicked.count(), 1);
+        QTRY_VERIFY(fixture.visible("rrTools"));
+        for (const auto *name : {"rrToolsTerminal", "rrToolsSketch", "rrToolsEditor", "rrToolsFiles", "rrToolsMods", "rrToolsGames"})
+            QVERIFY(fixture.visible(name));
+        QVERIFY(fixture.press("rrToolsClose"));
+        QTRY_VERIFY(!fixture.visible("rrTools"));
+        QVERIFY(fixture.window.readerWindow());
+    }
     void galleryWorkerFailure() {
         QTemporaryDir directory(QDir::tempPath() + "/gallery workers-XXXXXX");
         QVERIFY(directory.isValid());
@@ -5981,16 +6010,18 @@ class ScreenshotTests final : public QObject {
         QVERIFY(fixture.press("rrSettingsSystem"));
         QVERIFY(revealSettingsOption(fixture, "rrOpenTools"));
         QVERIFY(capture(fixture, name + "-tools-entry"));
+        fixture.window.readerWindow()->setProperty("roreader_tools_directory", fixture.directory.path() + "/tools");
         QVERIFY(fixture.press("rrOpenTools"));
         QTRY_VERIFY(fixture.visible("rrTools"));
         QVERIFY(capture(fixture, name + "-tools-terminal"));
         QVERIFY(fixture.press("rrToolsSketch"));
         auto *canvas = fixture.widget("rrSketchCanvas");
         QVERIFY(canvas);
-        QTest::mousePress(canvas, Qt::LeftButton, Qt::NoModifier, QPoint(100, 100));
-        QTest::mouseMove(canvas, QPoint(250, 200));
-        QTest::mouseMove(canvas, QPoint(400, 100));
-        QTest::mouseRelease(canvas, Qt::LeftButton, Qt::NoModifier, QPoint(400, 100));
+        const auto center = canvas->rect().center();
+        QTest::mousePress(canvas, Qt::LeftButton, Qt::NoModifier, center - QPoint(60, 60));
+        QTest::mouseMove(canvas, center + QPoint(0, 60));
+        QTest::mouseMove(canvas, center + QPoint(60, -60));
+        QTest::mouseRelease(canvas, Qt::LeftButton, Qt::NoModifier, center + QPoint(60, -60));
         QVERIFY(capture(fixture, name + "-tools-sketchpad"));
         QVERIFY(fixture.press("rrToolsEditor"));
         auto *editor = qobject_cast<QPlainTextEdit *>(fixture.widget("rrTextDocument"));
@@ -6003,6 +6034,18 @@ class ScreenshotTests final : public QObject {
         QVERIFY(capture(fixture, name + "-tools-keyboard"));
         QVERIFY(fixture.press("rrToolsInputCancel"));
         QTRY_VERIFY(!fixture.visible("rrToolsInputDialog"));
+        QVERIFY(fixture.press("rrToolsFiles"));
+        QTRY_VERIFY(!fixture.widget("rrTools")->property("utilityBusy").toBool());
+        QVERIFY(capture(fixture, name + "-tools-files"));
+        QVERIFY(fixture.press("rrToolsMods"));
+        QTRY_VERIFY(!fixture.widget("rrTools")->property("utilityBusy").toBool());
+        QVERIFY(capture(fixture, name + "-tools-device"));
+        QVERIFY(fixture.press("rrToolsGames"));
+        QVERIFY(capture(fixture, name + "-tools-tic-tac-toe"));
+        QVERIFY(fixture.press("rrGameSudoku"));
+        QVERIFY(capture(fixture, name + "-tools-sudoku"));
+        QVERIFY(fixture.press("rrGameMemory"));
+        QVERIFY(capture(fixture, name + "-tools-memory"));
         QVERIFY(fixture.press("rrToolsClose"));
         QTRY_VERIFY(fixture.visible("rrToolsDiscard"));
         QVERIFY(capture(fixture, name + "-tools-discard"));
@@ -7177,7 +7220,7 @@ int main(int argc, char **argv) {
     // full gallery's manifest tells which cases capture them.
     const auto selectedScenes = qEnvironmentVariable("KOBALT_GALLERY_SCENE").split(',', Qt::SkipEmptyParts);
     QMap<QString, QStringList> selection;
-    int expectedScreenshots = lightGallery ? 120 : 1298;
+    int expectedScreenshots = lightGallery ? 150 : 1328;
     if (screenshots) {
         if ((arguments.size() != 3 && !lightGallery) || !QDir::isAbsolutePath(arguments.at(2))) {
             qCritical() << "Usage: kobalt-desktop-tests --screenshots ABSOLUTE_DIRECTORY [--light]";

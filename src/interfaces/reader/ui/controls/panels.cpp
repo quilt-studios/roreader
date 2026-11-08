@@ -361,6 +361,15 @@ Panel::Panel(QWidget *parent, Edges separators) : QFrame(parent), separators(sep
     setAttribute(Qt::WA_OpaquePaintEvent);
 }
 void Panel::paintEvent(QPaintEvent *event) {
+    if (cornerRadius > 0) {
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        const int border = edgeWidth > 0 ? edgeWidth : int(m::control::border);
+        painter.setPen(QPen(palette().color(softEdges ? QPalette::Mid : QPalette::WindowText), border));
+        painter.setBrush(fill == QPalette::Midlight ? sectionColor(this) : palette().color(fill));
+        painter.drawRoundedRect(QRectF(rect()).adjusted(border / 2.0, border / 2.0, -border / 2.0, -border / 2.0), cornerRadius, cornerRadius);
+        return;
+    }
     // Opaque widgets skip Qt's background fill. Paint our paper in the same
     // pass as the controls, without repainting the book underneath.
     {

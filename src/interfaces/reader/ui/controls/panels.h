@@ -56,12 +56,18 @@ public:
         fill = role;
         update();
     }
+    void setCornerRadius(int radius) {
+        cornerRadius = qMax(0, radius);
+        setAttribute(Qt::WA_OpaquePaintEvent, !cornerRadius);
+        update();
+    }
 
 protected:
     void paintEvent(QPaintEvent *) override;
 
 private:
     Edges separators, dividers;
+    int cornerRadius = 0;
     bool softEdges = false;
     QPalette::ColorRole fill = QPalette::Window;
     int edgeWidth = 0; // Zero follows the current density; positive values are explicit widths.

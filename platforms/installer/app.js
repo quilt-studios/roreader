@@ -14,12 +14,12 @@ async function setPackage(buffer, label) {
 }
 async function loadBundledPackage() {
   try {
-    const checksum = await fetch('/package.sha256');
+    const checksum = await fetch(new URL('package.sha256', document.baseURI), {cache: 'no-store'});
     if (!checksum.ok) { $('manual-package').open = true; return; }
     const hash = (await checksum.text()).trim().split(/\s+/)[0];
     if (!/^[a-fA-F0-9]{64}$/.test(hash)) throw Error('Ungültige Prüfsummendatei.');
     message('package-status', 'Beiliegendes ROREADER-Paket wird geprüft …');
-    const packageResponse = await fetch('/package.zip');
+    const packageResponse = await fetch(new URL('package.zip', document.baseURI), {cache: 'no-store'});
     if (!packageResponse.ok) throw Error('Beiliegendes ROREADER-Paket fehlt.');
     const buffer = await packageResponse.arrayBuffer();
     if (await sha256(buffer) !== hash.toLowerCase()) throw Error('Beiliegendes Paket stimmt nicht mit seiner SHA-256-Prüfsumme überein.');

@@ -131,9 +131,13 @@ void Button::paintEvent(QPaintEvent *) {
             painter.setPen(Qt::NoPen);
             painter.setBrush(ink);
             const int diameter = qMin(width(), height());
-            painter.drawRect(mode == ButtonPaintMode::ToolbarCell
-                                 ? QRectF(rect())
-                                 : QRectF((width() - diameter) / 2.0, (height() - diameter) / 2.0, diameter, diameter));
+            const auto bounds = mode == ButtonPaintMode::ToolbarCell
+                                    ? QRectF(rect())
+                                    : QRectF((width() - diameter) / 2.0, (height() - diameter) / 2.0, diameter, diameter);
+            if (mode == ButtonPaintMode::ToolbarCell)
+                painter.drawRect(bounds);
+            else
+                painter.drawRoundedRect(bounds, m::control::buttonRadius, m::control::buttonRadius);
         }
     } else {
         paintButtonShape(painter, rect(), paper, active ? ink : paper,

@@ -8,4 +8,4 @@ QWidget *openTools(QWidget *host, KeyboardFactory keyboard, const QString &direc
 bool toolsBusy(const QWidget *host);
 void stopTools(QWidget *host);
 bool dismissTools(QWidget *host);
-}
+} // namespace kobalt::reader
