@@ -257,6 +257,14 @@ if(BUILD_TESTING)
     set(headless_environment "QT_QPA_PLATFORM=minimal:enable_fonts:freetype" "QT_STYLE_OVERRIDE=Fusion" "TMPDIR=${CMAKE_CURRENT_BINARY_DIR}/test-tmp")
     add_executable(roreader-tools-tests "${KOBALT_ROOT}/tests/roreader_tools.cpp")
     target_link_libraries(roreader-tools-tests PRIVATE kobalt-desktop kobalt-core Qt6::Test)
+    add_executable(roreader-capture-tests "${KOBALT_ROOT}/tests/screen_capture.cpp")
+    target_link_libraries(roreader-capture-tests PRIVATE kobalt-desktop kobalt-core Qt6::Test)
+    add_dependencies(kobalt-desktop-tests roreader-capture-tests)
+    add_test(NAME desktop.screenCapture COMMAND "${CMAKE_COMMAND}"
+        "-DTEST_EXECUTABLE=$<TARGET_FILE:roreader-capture-tests>"
+        "-DTEST_TIMEOUT=60" "-DTEST_TMP_ROOT=${CMAKE_CURRENT_BINARY_DIR}/test-tmp"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/run-test.cmake")
+    set_tests_properties(desktop.screenCapture PROPERTIES ENVIRONMENT "${headless_environment}" LABELS "desktop;light" TIMEOUT 65)
     add_test(NAME desktop.roreaderTools COMMAND "${CMAKE_COMMAND}"
         "-DTEST_EXECUTABLE=$<TARGET_FILE:roreader-tools-tests>"
         "-DTEST_TIMEOUT=60" "-DTEST_TMP_ROOT=${CMAKE_CURRENT_BINARY_DIR}/test-tmp"
@@ -272,6 +280,11 @@ if(BUILD_TESTING)
         "-DTEST_TIMEOUT=30" "-DTEST_TMP_ROOT=${CMAKE_CURRENT_BINARY_DIR}/test-tmp"
         -P "${CMAKE_CURRENT_SOURCE_DIR}/run-test.cmake")
     set_tests_properties(desktop.interfaceLanguage PROPERTIES ENVIRONMENT "${headless_environment}" LABELS "desktop;light" TIMEOUT 35)
+    add_test(NAME desktop.screenCaptureReader COMMAND "${CMAKE_COMMAND}"
+        "-DTEST_EXECUTABLE=$<TARGET_FILE:kobalt-desktop-tests>" "-DTEST_ARGUMENTS=screenCaptureFromReader"
+        "-DTEST_TIMEOUT=30" "-DTEST_TMP_ROOT=${CMAKE_CURRENT_BINARY_DIR}/test-tmp"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/run-test.cmake")
+    set_tests_properties(desktop.screenCaptureReader PROPERTIES ENVIRONMENT "${headless_environment}" LABELS "desktop;light" TIMEOUT 35)
     add_dependencies(kobalt-desktop-tests roreader-tools-tests)
     foreach(check annotationDefaultView galleryWorkerFailure galleryIntegrity sameProcessReadersDoNotRecoverEachOther standaloneHistorySourceKeys verticalJustification startup libraryOnboarding reading errors diagnostics storageDiagnostics timingEvents features stylesheet bookmarks bookmarkMerge annotations annotationModeFeedback annotationSelection coordinateProbeSerialization annotationGripMenus annotationCrossPageDrag selectionCrossPageDrag annotationCrossPageOverlap annotationOverlap touchCursor touchCursorOutsideReader links footnoteHitTargets footnoteHighlightShapes revealedLinkPress tappableLinks bookmarkCornerLinks
             annotationSectionBoundary headerFooterSizes batteryPercentageOnly headerFooterDismissal settings publisherFontDefault advancedText globalLayout columns fullWidthPanels dictionaryRedraw dictionaryAppearance dictionaryEditing dictionaryDismissal opticalSize desktopControls navigation largeInterfaceScale largeInterfaceScaleLongExit bookmarkReturn booxMenuDismissalRefresh booxRetirementFrame annotationTwoFingerTapConsumesWholeSequence annotationRightClickRejectsChords library libraryTextInheritance libraryGridRows libraryHold libraryScanningCaption libraryAtStart)

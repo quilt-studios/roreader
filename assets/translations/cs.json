@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminál · Sketchpad · Textový editor",
     "Sprache": "Jazyk",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Jazyk je aktivní po přijetí a opětovném otevření knihy.",
-    "Automatisch (Gerätesprache)": "Automaticky (jazyk zařízení)"
+    "Automatisch (Gerätesprache)": "Automaticky (jazyk zařízení)",
+    "Aufnahmeordner nicht verfügbar.": "Složka pro nahrávání není k dispozici.",
+    "Aufnahmedatei existiert bereits.": "Záznamový soubor již existuje.",
+    "Aufnahme konnte nicht gespeichert werden.": "Záznam nelze uložit.",
+    "JPEG-Encoder nicht verfügbar.": "Kodér JPEG není k dispozici.",
+    "Keine Videobilder aufgenommen.": "Nebyly zaznamenány žádné video snímky.",
+    "Bildschirmaufnahme": "Snímek obrazovky",
+    "Screenshot speichern": "Uložte snímek obrazovky",
+    "Video stoppen": "Zastavit video",
+    "Video starten": "Spustit video",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "PNG snímek obrazovky nebo AVI video zobrazení ROREADER. Video: 2 snímky/s, až 30 sekund a 16 MiB. Žádný záznam zvuku.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Umístění: ROREADER/nahrávky. V záznamu se může objevit viditelné menu a vypínač."
   },
   "web": {
     "ROREADER installieren": "Nainstalujte ROREADER",

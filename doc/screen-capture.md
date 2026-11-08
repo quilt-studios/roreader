@@ -1,0 +1,11 @@
+# Screen capture
+
+The reader tools expose PNG screenshots and short Motion JPEG AVI recordings through Device / Mods. Both capture the ROREADER widget tree, including visible menus. They do not read the Linux framebuffer or capture Nickel, other processes or audio.
+
+PNG export preserves the host widget dimensions. Recording samples at 2 fps for at most 30 seconds, with frames fitted into 800 × 1080 while preserving aspect ratio. The first frame fixes the movie dimensions; rotations are letterboxed. A single-image handoff bounds the encoder queue. Missed sample slots repeat the previous encoded frame so that recording duration follows elapsed time. Encoded payload and AVI overhead fit within 16 MiB. Hitting the limit finishes the available frames.
+
+Frames are rendered on the GUI thread, then scaled and JPEG-encoded on a worker. No storage writes or thread waits occur on the interactive capture path. The worker retains bounded compressed frames, then writes a single-stream RIFF AVI with an `idx1` keyframe index through `QSaveFile`. PNG encoding and writes also run on a worker. Unique timestamp/UUID names prevent ordinary collisions; symlink document roots and capture directories are rejected. Exports are separate from profiles, books and reading caches.
+
+The pending-work contract is shared with the existing utility lifecycle. Shutdown and USB preparation request stop and await pending storage work asynchronously. At the existing sleep and final reader-destruction boundaries, input is unavailable and the controller explicitly waits for the capture worker. Standby remains deferred while a capture is running. Hiding the host also stops recording. UI objects are never accessed from the encoder thread.
+
+The native capture tests check lossless PNG output, unique names, responsive event delivery, bounded recording output, the visible Stop button, hidden-host stop, storage-handoff completion, symlink rejection and the shared capture dialog. When available, `ffprobe` independently verifies the generated AVI stream and frame metadata. Reader integration tests drive capture through the actual canvas. The gallery includes the entry and dialog in both sizes and all interface variants. Real Kobo/tolino storage speeds, JPEG plugin availability and E-Ink capture latency remain device-validation items.

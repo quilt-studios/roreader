@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Termînal · Sketchpad · Edîtorê nivîsê",
     "Sprache": "Ziman",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Piştî qebûlkirin û vekirina pirtûkê zimanê çalak.",
-    "Automatisch (Gerätesprache)": "Otomatîk (zimanê cîhazê)"
+    "Automatisch (Gerätesprache)": "Otomatîk (zimanê cîhazê)",
+    "Aufnahmeordner nicht verfügbar.": "Peldanka tomarkirinê tune.",
+    "Aufnahmedatei existiert bereits.": "Pela tomarkirinê jixwe heye.",
+    "Aufnahme konnte nicht gespeichert werden.": "Tomar nehat tomarkirin.",
+    "JPEG-Encoder nicht verfügbar.": "JPEG encoder tune.",
+    "Keine Videobilder aufgenommen.": "Wêneyên vîdyoyê nehatine tomar kirin.",
+    "Bildschirmaufnahme": "Girtina ekranê",
+    "Screenshot speichern": "Dîmenê tomar bike",
+    "Video stoppen": "Vîdyoyê rawestîne",
+    "Video starten": "Vîdyoyê dest pê bike",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "Dîmena PNG an vîdyoya AVI ya dîtina ROREADER. Vîdyo: 2 çarçove / s, heya 30 çirkeyan û 16 MiB. No qeyda deng.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Cih: ROREADER / tomar. Pêşeka xuyayî û guheztina sekinandinê dikare di tomarê de xuya bibe."
   },
   "web": {
     "ROREADER installieren": "ROREADER saz bikin",

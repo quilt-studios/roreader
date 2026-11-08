@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminal · Sketchpad · Editeur de texte",
     "Sprache": "Langue",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Langue active après acceptation et réouverture du livre.",
-    "Automatisch (Gerätesprache)": "Automatique (langue de l'appareil)"
+    "Automatisch (Gerätesprache)": "Automatique (langue de l'appareil)",
+    "Aufnahmeordner nicht verfügbar.": "Dossier d'enregistrement non disponible.",
+    "Aufnahmedatei existiert bereits.": "Le fichier d'enregistrement existe déjà.",
+    "Aufnahme konnte nicht gespeichert werden.": "L'enregistrement n'a pas pu être sauvegardé.",
+    "JPEG-Encoder nicht verfügbar.": "Encodeur JPEG non disponible.",
+    "Keine Videobilder aufgenommen.": "Aucune image vidéo enregistrée.",
+    "Bildschirmaufnahme": "Capture d'écran",
+    "Screenshot speichern": "Enregistrer la capture d'écran",
+    "Video stoppen": "Arrêter la vidéo",
+    "Video starten": "Démarrer la vidéo",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "capture d'écran PNG ou vidéo AVI de la vue ROREADER. Vidéo : 2 images/s, jusqu'à 30 secondes et 16 Mio. Pas d'enregistrement sonore.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Localisation : ROREADER/enregistrements. Le menu visible et l'interrupteur d'arrêt peuvent apparaître dans l'enregistrement."
   },
   "web": {
     "ROREADER installieren": "Installer ROREADER",

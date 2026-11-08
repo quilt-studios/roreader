@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminal · Schetsblok · Teksteditor",
     "Sprache": "Taal",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Taal actief na acceptatie en heropening van het boek.",
-    "Automatisch (Gerätesprache)": "Automatisch (apparaattaal)"
+    "Automatisch (Gerätesprache)": "Automatisch (apparaattaal)",
+    "Aufnahmeordner nicht verfügbar.": "Opnamemap niet beschikbaar.",
+    "Aufnahmedatei existiert bereits.": "Opnamebestand bestaat al.",
+    "Aufnahme konnte nicht gespeichert werden.": "Opname kon niet worden opgeslagen.",
+    "JPEG-Encoder nicht verfügbar.": "JPEG-encoder niet beschikbaar.",
+    "Keine Videobilder aufgenommen.": "Geen videobeelden opgenomen.",
+    "Bildschirmaufnahme": "Schermopname",
+    "Screenshot speichern": "Schermafbeelding opslaan",
+    "Video stoppen": "Video stoppen",
+    "Video starten": "Video starten",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "PNG-screenshot of AVI-video van de ROREADER-weergave. Video: 2 frames/s, maximaal 30 seconden en 16 MiB. Geen geluidsopname.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Locatie: ROREADER/opnames. Het zichtbare menu en de stopschakelaar kunnen in de opname verschijnen."
   },
   "web": {
     "ROREADER installieren": "ROREADER installeren",

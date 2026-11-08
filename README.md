@@ -4,77 +4,85 @@
 
 # ROREADER
 
-**Ein EPUB-Reader mit Werkzeugen, Sketchpad und Offline-Spielen für Kobo und kompatible tolino-Geräte.**
+**An EPUB reader with built-in tools, a sketchpad and offline games for Kobo and compatible tolino devices.**
 
-ROREADER baut auf Kobalt auf und verwendet dessen Qt-Oberfläche und CREngine-Renderer. Du kannst DRM-freie EPUBs lesen, Zeichnungen anfertigen, Textdateien bearbeiten und Shell-Kommandos direkt auf dem Reader ausführen. Geschützte Bücher, PDFs und andere nicht unterstützte Formate werden weiterhin vom eingebauten Reader geöffnet.
+ROREADER is based on Kobalt and uses its Qt interface and CREngine renderer. Read DRM-free EPUBs, draw, edit text files and run shell commands directly on your reader. Protected books, PDFs and other unsupported formats continue to open in the device's built-in reader.
 
-## Sprachen
+## Languages
 
-Reader-Menüs, Werkzeuge, Spiele und der Website-Installer bieten **Deutsch, Englisch, Französisch, Spanisch, Italienisch, Portugiesisch, Niederländisch, Polnisch, Tschechisch, Slowakisch, Ungarisch, Rumänisch, Türkisch, Ukrainisch, Russisch, Schwedisch, Dänisch, Norwegisch, Finnisch, Indonesisch und Kurdisch (Kurmancî)**.
+Reader menus, tools, games and the website installer support **English, German, French, Spanish, Italian, Portuguese, Dutch, Polish, Czech, Slovak, Hungarian, Romanian, Turkish, Ukrainian, Russian, Swedish, Danish, Norwegian, Finnish, Indonesian and Kurdish (Kurmancî)**.
 
-Auf dem Reader: **Einstellungen → System → Sprache**, danach **Übernehmen** und das Buch erneut öffnen. Ohne eigene Auswahl wird die Gerätesprache verwendet; unbekannte Sprachen fallen auf Englisch zurück. Auf der Website steht die Sprachwahl oben; sie berücksichtigt die Browser-Sprache und merkt sich die Auswahl lokal. Sprachwechsel laden die Seite neu, daher danach den Reader-Ordner erneut auswählen. Während einer Installation ist die Sprachwahl gesperrt.
+On the reader, open **Settings → System → Language**, apply your settings and reopen the book. The device language is used unless you choose another language; unsupported languages fall back to English. The website's language selector follows your browser language and remembers your choice locally. Switching languages reloads the page, so select your reader's folder again afterwards. Language changes are disabled during installation.
 
-Die Kataloge sind lokal enthalten und benötigen keine Übersetzungsdienste beim Lesen oder Installieren. Die Übersetzungen sind maschinelle Erstfassungen und noch nicht vollständig muttersprachlich geprüft. Technische Systemmeldungen, Dateinamen, Buchinhalte und Lizenztexte bleiben in ihrer Originalsprache. Weitere Informationen und Prüfungen: [Übersetzungen](doc/localization.md).
+Language catalogs are included locally. Reading and installation do not use an online translation service. Translations are machine-generated drafts and still need native-speaker review. Technical system messages, filenames, book content and license notices keep their original language. See [Localization](doc/localization.md) for details and validation commands.
 
-## Werkzeuge auf dem Gerät
+## Tools on your reader
 
-Tippe im Lesemenü auf das **Werkzeug-Symbol**. Alternativ: **Einstellungen → System → Terminal · Sketchpad · Texteditor**. Der Tag-/Nacht-Schalter im Lesemenü wechselt das Design ohne den Umweg über die Einstellungen.
+Tap the **tools icon** in the reading menu, or open **Settings → System → Terminal · Sketchpad · Text editor**. The day/night shortcut in the reading menu switches themes directly.
 
-| Werkzeug | Funktionen |
+| Tool | Features |
 | --- | --- |
-| Terminal | Befehlsverlauf, bleibender Arbeitsordner nach `cd`, Eingabe an laufende Programme, UTF-8-Ausgabe und Textexport. Jeder Befehl läuft maximal 60 Sekunden mit begrenzter Ausgabe. Interaktive Vollbildprogramme wie `vi` benötigen eine PTY und werden nicht unterstützt. |
-| Sketchpad | Geglättete Linien, wählbare Stiftbreite, Grau/Schwarz, Radierer, Rückgängig und Wiederholen. Touch und gemeldeter Stiftdruck werden verarbeitet. PNGs öffnen und neue Zeichnungen exportieren. Änderungen werden für kleine Neuzeichenbereiche gebündelt; die echte Reaktionszeit hängt von Gerät und E-Ink-Treiber ab. |
-| Texteditor | UTF-8-Dateien einschließlich BOM öffnen und atomar speichern, Suche, Bildschirmtastatur, neue Zeilen und Rückgängig. Dateien bis 1 MiB. Extern geänderte oder ungeöffnet vorhandene Dateien werden nicht still überschrieben. |
-| Dateien | Dateien im ROREADER-Dokumentordner öffnen, umbenennen, nach Bestätigung löschen oder ihre SHA-256-Prüfsumme anzeigen. PNGs öffnen im Sketchpad, Textdateien im Editor. |
-| Gerät / Mods | Firmware-, Qt-, System-, Akku- und Speicherinformationen, Diagnoseexport, lokale Diagnosebefehle und Sicherungen der ROREADER-Dokumente. Keine automatischen Firmware-Patches. |
-| Spiele | Tic-Tac-Toe gegen den Reader oder zu zweit, Sudoku mit Konfliktprüfung und Tipps sowie Memory. Alles offline; Spielstände bleiben während der geöffneten Werkzeuge im Speicher. |
+| Terminal | Command history, a working directory that follows `cd`, input to running programs, UTF-8 output and text export. Commands have a 60-second limit and bounded output. Full-screen applications such as `vi` require a PTY and are not supported. |
+| Sketchpad | Smoothed strokes, adjustable pen width, black/gray ink, eraser, undo and redo. Handles touch and reported pen pressure. Open PNGs and export drawings. Small repaint regions are batched; actual latency depends on the device and E-Ink driver. |
+| Text editor | Open and atomically save UTF-8 files, including a BOM; search, on-screen keyboard, new lines and undo. Files are limited to 1 MiB. Externally changed files and existing files that have not been opened are not silently overwritten. |
+| Files | Open, rename, calculate SHA-256 checksums or delete files after confirmation in the ROREADER documents folder. PNGs open in Sketchpad; text files open in the editor. |
+| Device / Mods | Firmware, Qt, system, battery and storage information, diagnostic export, local diagnostic commands and ROREADER document backups. Does not automatically patch firmware. |
+| Games | Tic-Tac-Toe against the reader or another player, Sudoku with hints and conflict checking, and Memory. Games work offline; their state stays in memory while the tools are open. |
 
-Texte und Zeichnungen liegen auf dem Reader in **`/mnt/onboard/ROREADER/`**, also im Ordner **`ROREADER`** auf dem USB-Laufwerk. Auf dem Linux-Desktop liegen sie unter `Dokumente/ROREADER`. Ungespeicherte Entwürfe bleiben beim Wechsel zwischen den Werkzeugen erhalten; beim Schließen fragt die Oberfläche nach. Zum dauerhaften Aufbewahren bitte speichern. Shell-Kommandos laufen mit den Rechten des Reader-Prozesses; prüfe Befehle vor dem Ausführen.
+Text files and drawings are stored in **`/mnt/onboard/ROREADER/`**, the **`ROREADER`** folder on the reader's USB drive. On Linux desktop they use `Documents/ROREADER`. Unsaved drafts survive switching between tools; closing the tools asks whether to discard them. Save files to keep them permanently. Shell commands run with the reader process's permissions, so review commands before running them.
 
-**Dokumente sichern** erstellt einen neuen `backup-…`-Ordner mit Dateikopien und SHA-256-Manifest. Diese Sicherung umfasst nur die Dateien im ROREADER-Dokumentordner, nicht die Lesedatenbank, fremde Bücher oder die Firmware. Der Dateimanager zeigt die Dateien dieses Dokumentordners; Sicherungsunterordner lassen sich über USB öffnen. Verlauf und Spielstände werden nicht automatisch auf die SD-Karte geschrieben.
+**Back up documents** creates a new `backup-…` folder containing copies and a SHA-256 manifest. This covers files in the ROREADER documents folder, not the reading database, other books or firmware. The file manager lists files in that documents folder; backup subfolders can be opened over USB. Command history and game state are not automatically written to the SD card.
 
-## Online installieren
+## Screenshots and video
 
-Die GitHub-Pages-Seite wird aus demselben Installer-Code wie die Windows-Oberfläche gebaut. Öffne sie auf deinem Computer in einer aktuellen Version von **Chrome oder Edge**, verbinde den Reader per USB und wähle sein Hauptverzeichnis über **„Reader-Laufwerk auswählen“**. Eine BAT oder zusätzliche App ist dafür nicht erforderlich. Das bereitgestellte Qt6-Paket wird automatisch heruntergeladen und geprüft; deine Geräte- und Buchdaten werden nicht hochgeladen.
+Open **Tools → Device / Mods → Screen capture**. Choose **Save screenshot** for a full-resolution PNG of the current ROREADER view, or **Start video** for a short Motion JPEG AVI clip. Close Tools to record your reading session, then use the floating **Stop** button. Menu contents and the Stop button can appear in the recording.
 
-Der Workflow [ROREADER website](.github/workflows/pages.yml) veröffentlicht die Seite über GitHub Pages. Aktiviere dafür einmalig unter **Settings → Pages → Source → GitHub Actions** die Bereitstellung und starte den Workflow. Die tatsächlich verfügbare Adresse steht nach erfolgreicher Bereitstellung im Pages-Deployment des Repositories.
+Videos use 2 frames per second, a maximum frame size of 800 × 1080, and a limit of 30 seconds or 16 MiB. They record the ROREADER view without audio; the Nickel home screen and other applications are outside this capture. JPEG encoding and file writes run on a worker. Clips are finalized when stopped; sleep, USB transitions and reader closing stop the session and finish pending writes.
 
-## Windows: in Chrome installieren
+Exports are saved under **`ROREADER/recordings/`** on the USB drive. PNG files preserve screenshot resolution; AVI files can be opened in a player such as VLC. Wait for saving to finish before transferring them. These are local exports and do not change your books or reading profiles. Physical-device recording performance still needs validation.
 
-1. Lade [ROREADER-Windows-Installer.zip](ziprelease/ROREADER-Windows-Installer.zip) herunter und entpacke es vollständig auf deinem Windows-PC. Die [SHA-256-Prüfsumme](ziprelease/ROREADER-Windows-Installer.zip.sha256) liegt daneben.
-2. Verbinde den Reader per USB und bestätige am Gerät die Verbindung zum Computer. Sichere deine Bücher und Lesedaten.
-3. Starte **`Install-ROREADER.bat`**. Die Datei öffnet den lokalen Installer in **Google Chrome**. Chrome muss installiert sein; Python und Administratorrechte werden nicht benötigt.
-4. Klicke **„Reader-Laufwerk auswählen“** und wähle das **Hauptverzeichnis `/`** deines Geräts, zum Beispiel `E:\`. Wähle weder `.kobo` noch `.adds` als Ausgangsordner.
-5. Erlaube Chrome den Zugriff auf diesen Ordner. Das mitgelieferte Qt6-Paket und seine SHA-256-Prüfsumme werden automatisch geladen. Prüfe die erkannte Firmware und bestätige deine Datensicherung.
-6. Klicke **„ROREADER auf den Reader kopieren“**. Nach erfolgreicher Kopierprüfung das Laufwerk sicher auswerfen, USB trennen und die Installation auf dem Reader abwarten.
+## Install online
 
-Lass das Konsolenfenster währenddessen geöffnet. Es betreibt ausschließlich den lokalen Dateiserver; das Schließen beendet ihn. Dateien werden direkt über Chromes Ordnerfreigabe auf das Gerät geschrieben. Es gibt keinen Upload und keine Anmeldung. Eine vorhandene ROREADER/Kobalt-Installation wird erkannt: **ROREADER aktualisieren** ersetzt die Programmdateien und bereitet das neue Gerätepaket vor. Bücher, Lesedaten, Einstellungen und eigene Dokumente bleiben erhalten. Ein bereits auf dem Gerät liegendes Update-Archiv muss zuerst am Reader abgeschlossen werden.
+The GitHub Pages site uses the same installer code as the Windows bundle. Open it on your computer in a current version of **Chrome or Edge**, connect your reader over USB and choose its root folder using **Select reader drive**. No BAT file or additional application is required. The supplied Qt6 package is downloaded and verified automatically; device and book data are not uploaded.
 
-Wenn du die BAT direkt aus dem Quellcode startest, kannst du stattdessen dein gebautes **`ROREADER-qt6.zip`** und die Prüfsumme aus **`ROREADER-qt6.zip.sha256`** auswählen. Die Weboberfläche benötigt ein echtes Gerätepaket; sie lädt keine fremde Release-Version als Ersatz.
+The [ROREADER website](.github/workflows/pages.yml) workflow publishes the site through GitHub Pages. Enable **Settings → Pages → Source → GitHub Actions** once, then run the workflow. Its successful Pages deployment provides the published URL.
 
-## Firmware und Modelle
+## Windows: install using Chrome
 
-Der Installationsweg richtet sich an **Kobo- und tolino-Geräte mit Kobo-basierter Firmware 5.x oder 6.x** und verwendet das Qt6-Paket. Der Installer prüft die Firmwarefamilie anhand von `.kobo/version`; die Anwendung behält ihre Prüfungen der benötigten Firmware-Symbole und Objektlayouts.
+1. Download [ROREADER-Windows-Installer.zip](ziprelease/ROREADER-Windows-Installer.zip) and extract it completely on your Windows PC. Its [SHA-256 checksum](ziprelease/ROREADER-Windows-Installer.zip.sha256) is provided alongside it.
+2. Connect the reader over USB and confirm the connection on the device. Back up your books and reading data.
+3. Run **`Install-ROREADER.bat`**. It opens the local installer in **Google Chrome**. Chrome must be installed; Python and administrator privileges are not required.
+4. Click **Select reader drive** and choose the device's **root directory `/`**, for example `E:\`. Do not select `.kobo` or `.adds` as the starting folder.
+5. Allow Chrome to access the folder. The bundled Qt6 package and checksum load automatically. Check the detected firmware and confirm that you have backed up your data.
+6. Click **Copy ROREADER to the reader**. After the copy has been verified, safely eject the drive, disconnect USB and wait for installation on the reader.
 
-**Eine Unterstützung aller Modelle und aller Firmwarestände ist noch nicht auf echten Geräten nachgewiesen.** Die erkannte Versionsnummer bestätigt weder ein kompatibles Gerät noch eine erfolgreich abgeschlossene Installation. Ältere Android-basierte tolino-Modelle sind nicht Teil dieses USB-Installationswegs. Ein gegebenenfalls benötigter Mod-Manager muss ebenfalls zur installierten Firmware passen. Veränderte Firmware-ABIs dürfen die Kompatibilitätsprüfungen nicht umgehen.
+Keep the console window open while using the installer: it runs the local file server, which stops when the window closes. Files are written directly through Chrome's folder permission. No upload or sign-in is required. Existing ROREADER/Kobalt installations are detected: **Update ROREADER** replaces program files and stages the new device package. Books, reading data, settings and personal documents are preserved. Any update archive already on the device must be processed on the reader first.
 
-Die vorhandenen Qt5- und Android-Buildpfade bleiben im Quellcode. Der neue Windows-Installer akzeptiert ausschließlich das normale Qt6-Gerätepaket, keine Qt5- oder Evaluationspakete.
+When starting the BAT from the source checkout, you can select your own built **`ROREADER-qt6.zip`** and the checksum from **`ROREADER-qt6.zip.sha256`**. The interface requires a real device package and does not substitute another project's release.
 
-## Selbst bauen und testen
+## Firmware and models
 
-Ausführliche Voraussetzungen und Plattformbefehle stehen in [Building](doc/building.md). Linux-Entwicklung verwendet ein vorbereitetes **Qt 6.11+ SDK** mit Core, Gui, Widgets, Network und Sql; Tests benötigen zusätzlich Test, passende GuiPrivate-Header und das Minimal-Plugin. Qt wird nicht als Teil von ROREADER kompiliert.
+The USB installer targets **Kobo and tolino devices running Kobo-based firmware 5.x or 6.x**, using the Qt6 package. It detects the firmware family from `.kobo/version`; the application retains its checks for required firmware symbols and object layouts.
+
+**Support for every model and firmware version has not been verified on physical devices.** Detecting a version number does not confirm device compatibility or successful installation. Older Android-based tolino devices are outside this USB installation path. Any required mod manager must also support the installed firmware. Firmware ABI changes must not bypass compatibility checks.
+
+The existing Qt5 and Android build paths remain available in the source. The Windows installer accepts only the regular Qt6 device package, not Qt5 or evaluation packages.
+
+## Build and test
+
+See [Building](doc/building.md) for prerequisites and platform commands. Linux development uses a prepared **Qt 6.11+ SDK** with Core, Gui, Widgets, Network and Sql. Tests additionally require Test, matching GuiPrivate headers and the Minimal platform plugin. ROREADER does not build Qt as part of its application build.
 
 ```sh
 cd platforms/desktop
-cmake --preset linux -DCMAKE_PREFIX_PATH=/pfad/zum/qt-sdk
+cmake --preset linux -DCMAKE_PREFIX_PATH=/path/to/qt-sdk
 cmake --build --preset linux
 cmake --build --preset linux-light-tests
 ctest --preset linux-light
 ```
 
-Der interne Desktop-Buildtarget und die ausführbare Datei heißen aus Kompatibilitätsgründen weiterhin `Kobalt`; Oberfläche und Gerätepakete heißen ROREADER. Auch `.adds/kobalt`, bestehende Profile, Datenbanken und Plugin-Identitäten bleiben erhalten, damit vorhandene Lesedaten weiterverwendet werden. Quellcode-Namensräume und CMake-Optionen mit `KOBALT_` sind keine separaten Anwendungen.
+For compatibility, the internal desktop build target and executable are still named `Kobalt`; the interface and device packages are named ROREADER. Existing `.adds/kobalt` paths, profiles, databases and plugin identities are preserved so that reading data remains usable. Source namespaces and CMake options starting with `KOBALT_` do not identify a separate application.
 
-Für das Firmware-5/6-Paket wird das gepinnte, vorbereitete `kobuild`-Qt6-Image benötigt:
+The firmware-5/6 package requires the pinned, prepared `kobuild` Qt6 image:
 
 ```sh
 docker pull "$(sh platforms/sdk-image.sh qt6)"
@@ -84,18 +92,18 @@ cmake -DROOT="$PWD" \
   -P platforms/installer/package.cmake
 ```
 
-Das Gerätepaket liegt in `build/kobo-qt6/`; das Windows-Bundle inklusive BAT, Weboberfläche, Paket und Prüfsumme liegt in **`build/installer/ROREADER-Windows-Installer.zip`**. Build und Paketprüfung ersetzen keinen Installationstest auf dem Gerät.
+The device package is written to `build/kobo-qt6/`. The Windows bundle, including the BAT, web interface, device package and checksum, is **`build/installer/ROREADER-Windows-Installer.zip`**. A successful build and archive check do not replace installation testing on a real device.
 
-Die ZIP- und Firmwareprüfungen der Weboberfläche lassen sich mit Node.js ausführen:
+Run the web installer's ZIP and firmware checks with Node.js:
 
 ```sh
 node --test tests/installer.test.mjs
 ```
 
-Die native Light-Suite enthält auch die Funktionsprüfungen der Gerätewerkzeuge. Screenshots laufen headless über `linux-light-screenshots`; die vollständige Galerie und weitere Testgruppen sind in [Native validation](doc/validation.md) beschrieben. Der Entwickler-Launcher startet über `./start.sh`; `./start.sh --check` prüft seine Voraussetzungen, ohne ein Fenster zu öffnen.
+The native light suite includes functional checks for the device tools. Generate headless screenshots with `linux-light-screenshots`; [Native validation](doc/validation.md) describes the complete gallery and other test groups. Run `./start.sh` to open the developer launcher, or `./start.sh --check` to check its prerequisites without opening a window.
 
-## Herkunft und Lizenz
+## Origin and license
 
-ROREADER ist ein Fork von Kobalt, kein offizielles Produkt von Rakuten Kobo oder tolino. Die ursprünglichen Urheberhinweise und [Acknowledgments](doc/acknowledgements.md) bleiben erhalten. CREngine stammt aus dem [KOReader](https://koreader.rocks/)-Umfeld. Die neuen Logo-Grafiken wurden für ROREADER generiert.
+ROREADER is a fork of Kobalt, not an official Rakuten Kobo or tolino product. Original copyright notices and [Acknowledgments](doc/acknowledgements.md) are preserved. CREngine comes from the [KOReader](https://koreader.rocks/) ecosystem. The new logo artwork was generated for ROREADER.
 
-Der Anwendungscode steht unter der [MIT-Lizenz](LICENSE); Drittbibliotheken und kombinierte Pakete unterliegen ihren jeweiligen Lizenzbedingungen, einschließlich GPL und AGPL. Das kombinierte Paket wird unter GNU AGPL v3 ohne Gewährleistung verteilt. Siehe `assets/notices/` für die enthaltenen Lizenztexte.
+The application code uses the [MIT license](LICENSE). Third-party libraries and combined packages remain subject to their respective licenses, including GPL and AGPL. The combined package is distributed under GNU AGPL v3 without warranty. Included license texts are available in `assets/notices/`.

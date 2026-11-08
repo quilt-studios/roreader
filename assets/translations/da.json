@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminal · Skitseblok · Teksteditor",
     "Sprache": "Sprog",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Sprog aktivt efter accept og genåbning af bogen.",
-    "Automatisch (Gerätesprache)": "Automatisk (enhedssprog)"
+    "Automatisch (Gerätesprache)": "Automatisk (enhedssprog)",
+    "Aufnahmeordner nicht verfügbar.": "Optagelsesmappe er ikke tilgængelig.",
+    "Aufnahmedatei existiert bereits.": "Optagelsesfil eksisterer allerede.",
+    "Aufnahme konnte nicht gespeichert werden.": "Optagelsen kunne ikke gemmes.",
+    "JPEG-Encoder nicht verfügbar.": "JPEG-koder ikke tilgængelig.",
+    "Keine Videobilder aufgenommen.": "Ingen videobilleder optaget.",
+    "Bildschirmaufnahme": "Skærmbillede",
+    "Screenshot speichern": "Gem skærmbillede",
+    "Video stoppen": "Stop video",
+    "Video starten": "Start video",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "PNG-skærmbillede eller AVI-video af ROREADER-visningen. Video: 2 billeder/s, op til 30 sekunder og 16 MiB. Ingen lydoptagelse.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Sted: ROREADER/optagelser. Den synlige menu og stopkontakt kan vises i optagelsen."
   },
   "web": {
     "ROREADER installieren": "Installer ROREADER",

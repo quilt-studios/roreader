@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminal · Sketchpad · Editor de text",
     "Sprache": "Limbă",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Limba activă după acceptarea și redeschiderea cărții.",
-    "Automatisch (Gerätesprache)": "automat (limba dispozitivului)"
+    "Automatisch (Gerätesprache)": "automat (limba dispozitivului)",
+    "Aufnahmeordner nicht verfügbar.": "folderul de înregistrare nu este disponibil.",
+    "Aufnahmedatei existiert bereits.": "Fișierul de înregistrare există deja.",
+    "Aufnahme konnte nicht gespeichert werden.": "Înregistrarea nu a putut fi salvată.",
+    "JPEG-Encoder nicht verfügbar.": "Codificatorul JPEG nu este disponibil.",
+    "Keine Videobilder aufgenommen.": "Nu au fost înregistrate imagini video.",
+    "Bildschirmaufnahme": "Captură ecran",
+    "Screenshot speichern": "Salvați captura de ecran",
+    "Video stoppen": "Opriți videoclipul",
+    "Video starten": "Începeți videoclipul",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "Captură de ecran PNG sau videoclip AVI a vizualizării ROREADER. Video: 2 cadre/s, până la 30 de secunde și 16 MiB. Fără înregistrare audio.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Locație: ROREADER/înregistrări. Meniul vizibil și comutatorul de oprire pot apărea în înregistrare."
   },
   "web": {
     "ROREADER installieren": "Instalați ROREADER",

@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminal · Eskiz defteri · Metin düzenleyici",
     "Sprache": "Dil",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Kitap kabul edilip yeniden açıldıktan sonra dil etkin.",
-    "Automatisch (Gerätesprache)": "Otomatik (cihaz dili)"
+    "Automatisch (Gerätesprache)": "Otomatik (cihaz dili)",
+    "Aufnahmeordner nicht verfügbar.": "Kayıt klasörü mevcut değil.",
+    "Aufnahmedatei existiert bereits.": "Kayıt dosyası zaten mevcut.",
+    "Aufnahme konnte nicht gespeichert werden.": "Kayıt kaydedilemedi.",
+    "JPEG-Encoder nicht verfügbar.": "JPEG kodlayıcı mevcut değil.",
+    "Keine Videobilder aufgenommen.": "Kaydedilmiş video görüntüsü yok.",
+    "Bildschirmaufnahme": "Ekran yakalama",
+    "Screenshot speichern": "Ekran görüntüsünü kaydet",
+    "Video stoppen": "Videoyu durdur",
+    "Video starten": "Videoyu başlat",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "ROREADER görünümünün PNG ekran görüntüsü veya AVI videosu. Video: 2 kare/sn, 30 saniyeye kadar ve 16 MiB. Ses kaydı yok.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Konum: ROREADER/kayıtlar. Görünür menü ve durdurma düğmesi kayıtta görünebilir."
   },
   "web": {
     "ROREADER installieren": "ROREADER'ı yükle",

@@ -1,3 +1,4 @@
+#include "interfaces/reader/capture/screen_capture.h"
 #include "interfaces/reader/ui/controls/buttons.h"
 #include "interfaces/reader/tools/tools_panel.h"
 #include "interfaces/reader/ui/controls/icons.h"
@@ -51,6 +52,7 @@ using kobalt::Choice;
 
 Reader::~Reader() {
     mainthread::AllowBlocking allow("closing reader");
+    waitForScreenCaptures(this);
     if (kosyncClient) kosyncClient->persistSyncTime();
     if (closeWithoutSaving) book->discardPendingSaves();
     flushDiagnostics(1000);
@@ -99,6 +101,7 @@ void Reader::checkpoint() {
     // position on storage when this returns. Android and desktop also ask
     // once a book opens, a known exception while the first page is shown.
     mainthread::AllowBlocking allow("host checkpoint");
+    if (services.suspended()) { stopScreenRecording(this); waitForScreenCaptures(this); }
     if (exitPending || exportRunning || closing) {
         book->stopReading(true);
         return;
@@ -129,6 +132,7 @@ void Reader::observeReading() {
 }
 
 void Reader::prepareShutdown(std::function<void()> finished, bool allowFailedSave) {
+    stopScreenRecording(this);
     allowFailedTransition = allowFailedSave;
     if (closeWithoutSaving) {
         // Hosts also call this while retiring an accepted reader close. The
@@ -345,6 +349,7 @@ void Reader::sleepReader() {
     stopTools(this);
     // The device is going to sleep; no tap can turn the page until it wakes.
     mainthread::AllowBlocking allow("sleep");
+    waitForScreenCaptures(this);
     book->retryFailedReadingSave();
     if (orientation) {
         orientation->freeze();
@@ -535,7 +540,8 @@ void Reader::progressTick() {
 
 QVector<QWidget *> Reader::popups() const {
     // Header and footer and the field list cover the panels, under every other pop-up.
-    return {findChild<QWidget *>("rrTools", Qt::FindDirectChildrenOnly), annotationPopover,
+    return {findChild<QWidget *>("rrTools", Qt::FindDirectChildrenOnly),
+            findChild<QWidget *>("rrRecordingStop", Qt::FindDirectChildrenOnly), annotationPopover,
             headerFooterView,
             fieldChooser,
             busyNotice,
@@ -562,7 +568,8 @@ QVector<QWidget *> Reader::popups() const {
             customReplaceDialog.data(),
             annotationErrorDialog.data(),
             formattingWarningDialog.data(),
-            settingsWriteErrorDialog.data()};
+            settingsWriteErrorDialog.data(),
+            findChild<QWidget *>("rrScreenCaptureDialog", Qt::FindDirectChildrenOnly)};
 }
 
 bool Reader::popup(QObject *object) const {
@@ -1023,6 +1030,7 @@ void Reader::resizeEvent(QResizeEvent *) {
 
 void Reader::closeEvent(QCloseEvent *event) {
     if (!closing && dismissTools(this)) { event->ignore(); return; }
+    stopScreenRecording(this);
     model->cancelPendingTurn();
     appearanceEdit.clearContinuation();
     closeSearch();
