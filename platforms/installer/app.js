@@ -1,8 +1,9 @@
+import {t, tr} from './locale.js';
 import {readZip, extract, sha256, firmwareFromVersion} from './zip.js';
 const $ = id => document.getElementById(id);
 let device, firmware, entries, verifiedHash, busy = false, installed = false;
-function message(id, text, error = false) { $(id).textContent = text; $(id).classList.toggle('error', error); }
-function update() { $('install').textContent = installed ? 'ROREADER aktualisieren' : 'ROREADER auf den Reader kopieren'; $('install').disabled = busy || !device || !entries || !/^[a-fA-F0-9]{64}$/.test($('checksum').value.trim()) || !$('backup').checked; }
+function message(id, text, error = false) { $(id).textContent = t(text); $(id).classList.toggle('error', error); }
+function update() { $('install').textContent = installed ? t('ROREADER aktualisieren') : t('ROREADER auf den Reader kopieren'); $('install').disabled = busy || !device || !entries || !/^[a-fA-F0-9]{64}$/.test($('checksum').value.trim()) || !$('backup').checked; }
 async function setPackage(buffer, label) {
   if (buffer.byteLength > 512 * 1024 * 1024) throw Error('Maximale Paketgröße: 512 MiB.');
   const parsed = readZip(buffer);
@@ -10,7 +11,7 @@ async function setPackage(buffer, label) {
   for (const entry of parsed) { await extract(entry); }
   verifiedHash = hash;
   entries = parsed;
-  message('package-status', `${label} · ${parsed.length} Dateien · geprüft und bereit.`);
+  message('package-status', tr`${label} · ${parsed.length} Dateien · geprüft und bereit.`);
 }
 async function loadBundledPackage() {
   try {
@@ -25,7 +26,7 @@ async function loadBundledPackage() {
     if (await sha256(buffer) !== hash.toLowerCase()) throw Error('Beiliegendes Paket stimmt nicht mit seiner SHA-256-Prüfsumme überein.');
     if ($('package').files.length) return;
     $('checksum').value = hash;
-    await setPackage(buffer, 'Beiliegendes ROREADER-Paket');
+    await setPackage(buffer, t('Beiliegendes ROREADER-Paket'));
   } catch (error) { entries = null; $('manual-package').open = true; message('package-status', error.message, true); }
   update();
 }
@@ -49,7 +50,7 @@ $('device').onclick = async () => {
       installed = true;
     } catch (error) { if (error.name !== 'NotFoundError') throw error; }
     device = selected;
-    message('device-status', `${selected.name} · Firmware ${firmware}. ${installed ? 'Vorhandene ROREADER/Kobalt-Installation erkannt: Programmdateien werden ersetzt; Bücher, Lesedaten und eigene Dokumente bleiben erhalten. ' : 'Neuinstallation. '}Modellkompatibilität ist damit noch nicht bestätigt.`);
+    message('device-status', tr`${selected.name} · Firmware ${firmware}. ${installed ? t('Vorhandene ROREADER/Kobalt-Installation erkannt: Programmdateien werden ersetzt; Bücher, Lesedaten und eigene Dokumente bleiben erhalten. ') : t('Neuinstallation.') + ' '}Modellkompatibilität ist damit noch nicht bestätigt.`);
   } catch (error) { message('device-status', error.name === 'AbortError' ? 'Auswahl abgebrochen.' : error.message, true); }
   update();
 };
@@ -84,13 +85,13 @@ async function writeFile(path, bytes, undo) {
   try { await writer.write(bytes); await writer.close(); }
   catch (error) { await writer.abort().catch(() => {}); throw error; }
   const actual = await (await file.getFile()).arrayBuffer();
-  if (await sha256(actual) !== await sha256(bytes)) throw Error(`Schreibprüfung fehlgeschlagen: ${path}`);
+  if (await sha256(actual) !== await sha256(bytes)) throw Error(tr`Schreibprüfung fehlgeschlagen: ${path}`);
 }
 $('install').onclick = async () => {
   if ($('install').disabled) return;
   if ($('checksum').value.trim().toLowerCase() !== verifiedHash) { message('result', 'SHA-256 stimmt nicht mit der erwarteten Prüfsumme überein. Es wurde nichts geschrieben.', true); return; }
   busy = true; update();
-  for (const id of ['device', 'package', 'checksum', 'backup']) $(id).disabled = true;
+  for (const id of ['device', 'package', 'checksum', 'backup', 'language']) $(id).disabled = true;
   const progress = $('progress'); progress.hidden = false; progress.max = entries.length;
   const undo = [];
   try {
@@ -99,17 +100,17 @@ $('install').onclick = async () => {
     if (current !== firmware) throw Error('Firmware oder ausgewähltes Gerät hat sich geändert. Bitte neu auswählen.');
     // Do not overwrite an already staged firmware update or another installer.
     for (const name of ['Kobo.tgz', 'KoboRoot.tgz']) {
-      try { await kobo.getFileHandle(name); throw Error(`${name} liegt bereits auf dem Gerät. Vorhandenes Update zuerst abschließen.`); }
+      try { await kobo.getFileHandle(name); throw Error(tr`${name} liegt bereits auf dem Gerät. Vorhandenes Update zuerst abschließen.`); }
       catch (error) { if (error.name !== 'NotFoundError') throw error; }
     }
     const ordered = [...entries].sort((a, b) => Number(a.name.startsWith('.kobo/')) - Number(b.name.startsWith('.kobo/')));
     for (let i = 0; i < ordered.length; i++) {
       const entry = ordered[i];
-      message('result', `Kopiere ${entry.name}`);
+      message('result', tr`Kopiere ${entry.name}`);
       await writeFile(entry.name, await extract(entry), undo);
       progress.value = i + 1;
     }
-    message('result', `${installed ? 'Aktualisierung bereit. ' : ''}Paket vollständig kopiert und geprüft. Jetzt sicher auswerfen, USB trennen und am Reader warten. Die erfolgreiche Geräteinstallation ist damit noch nicht geprüft.`);
+    message('result', (installed ? t('Aktualisierung bereit. ') : '') + t('Paket vollständig kopiert und geprüft. Jetzt sicher auswerfen, USB trennen und am Reader warten. Die erfolgreiche Geräteinstallation ist damit noch nicht geprüft.'));
   } catch (error) {
     let rollbackError = false;
     // Restore overwritten assets and remove only files created by this attempt.
@@ -122,10 +123,10 @@ $('install').onclick = async () => {
         }
       } catch { rollbackError = true; }
     }
-    message('result', `Installation nicht abgeschlossen: ${error.message}${rollbackError ? ' Rücknahme unvollständig: Gerät erneut verbinden und Dateien prüfen.' : undo.length ? ' Kopierte Dateien wurden zurückgenommen.' : ' Es wurde nichts geschrieben.'}`, true);
+    message('result', tr`Installation nicht abgeschlossen: ${t(error.message)}${' ' + t(rollbackError ? 'Rücknahme unvollständig: Gerät erneut verbinden und Dateien prüfen.' : undo.length ? 'Kopierte Dateien wurden zurückgenommen.' : 'Es wurde nichts geschrieben.')}`, true);
   } finally {
     busy = false;
-    for (const id of ['device', 'package', 'checksum', 'backup']) $(id).disabled = false;
+    for (const id of ['device', 'package', 'checksum', 'backup', 'language']) $(id).disabled = false;
     update();
   }
 };

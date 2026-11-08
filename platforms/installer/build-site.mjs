@@ -1,4 +1,4 @@
-import {readFile, mkdir, copyFile, writeFile, stat, rename, rm} from 'node:fs/promises';
+import {readFile, mkdir, copyFile, writeFile, stat, rename, rm, cp} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {resolve, dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -20,7 +20,8 @@ if (hash !== expected) throw Error('Qt6 package does not match its checksum side
 const temporary = output + '.staging-' + process.pid;
 await mkdir(temporary,{recursive:true});
 try {
-  for (const file of ['index.html','app.js','zip.js','style.css']) await copyFile(join(root,'platforms/installer',file),join(temporary,file));
+  for (const file of ['index.html','app.js','zip.js','style.css','locale.js']) await copyFile(join(root,'platforms/installer',file),join(temporary,file));
+  await cp(join(root,'assets/translations'),join(temporary,'locales'),{recursive:true});
   await copyFile(join(root,'assets/roreader-icon.png'),join(temporary,'logo.png'));
   await copyFile(packagePath,join(temporary,'package.zip'));
   await writeFile(join(temporary,'package.sha256'),hash+'  package.zip\n');

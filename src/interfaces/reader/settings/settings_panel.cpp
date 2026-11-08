@@ -10,6 +10,7 @@
 #include "interfaces/reader/ui/panel_timing.h"
 #include "settings_panel.h"
 #include "interfaces/reader/tools/tools_panel.h"
+#include "support/localization.h"
 #include "interfaces/reader/panels/dictionary_panel.h"
 #include "reading/appearance_settings.h"
 #include "support/strings.h"
@@ -556,8 +557,30 @@ SettingsPanel::SettingsPanel(QWidget *parent, const SettingsPanelInputs &inputs)
                                                     strings::get("settings.dictionary_font_size"), [] {});
     systemRows->addWidget(dictionaryFontButton);
     systemRows->addWidget(dictionaryFontSizeButton);
+    section(systemPage, systemRows, "rrLanguageSection", i18n::text("Sprache"));
+    languageOption = new QComboBox(systemPage);
+    languageOption->setObjectName("rrInterfaceLanguage");
+    languageOption->setAccessibleName(i18n::text("Sprache"));
+    languageOption->addItem(i18n::text("Automatisch (Gerätesprache)"), QString());
+    const auto supportedLanguages = i18n::languages();
+    for (auto it = supportedLanguages.begin(); it != supportedLanguages.end(); ++it)
+        languageOption->addItem(it.value().toString(), it.key());
+    languageOption->setMinimumHeight(ui::metrics::chrome::actionHeight);
+    languageOption->setMaxVisibleItems(7);
+    ui::readerStyle(languageOption,
+        QString("QComboBox{%1padding-left:%2px;padding-right:%2px;border:1px solid palette(mid);"
+                "border-radius:%3px;background:palette(window);color:palette(window-text);} "
+                "QComboBox QAbstractItemView{%1} QComboBox QAbstractItemView::item{min-height:%4px;}")
+            .arg(ui::styles::font(m::chrome::labelText)).arg(int(m::chrome::inset))
+            .arg(ui::px(16)).arg(ui::px(64)));
+    systemRows->addWidget(languageOption);
+    auto *languageHelp = new ui::InterfaceLabel(i18n::text("Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv."), systemPage);
+    languageHelp->setWordWrap(true);
+    languageHelp->setContentsMargins(m::chrome::inset, ui::px(12), m::chrome::inset, ui::px(12));
+    ui::readerStyle(languageHelp, ui::styles::font(m::chrome::descriptionText));
+    systemRows->addWidget(languageHelp);
     section(systemPage, systemRows, "rrSystemToolsSection", QStringLiteral("ROREADER"));
-    ui::makeCaptionButton(systemPage, systemRows, "rrOpenTools", QStringLiteral("Terminal · Sketchpad · Texteditor"),
+    ui::makeCaptionButton(systemPage, systemRows, "rrOpenTools", i18n::text("Terminal · Sketchpad · Texteditor"),
                           [parent, keyboard = inputs.keyboard] { openTools(parent, keyboard); });
     systemRows->addStretch(1);
     auto *aboutPage = new QWidget(settingsPages);

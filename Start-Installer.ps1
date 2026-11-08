@@ -5,6 +5,10 @@ $listener = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
 $listener.Start()
 $port = $listener.LocalEndpoint.Port
 $files = @{'/' = @('index.html','text/html; charset=utf-8'); '/style.css' = @('style.css','text/css'); '/app.js' = @('app.js','text/javascript'); '/zip.js' = @('zip.js','text/javascript')}
+$files['/locale.js'] = @('locale.js', 'text/javascript')
+Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'assets/translations') -Filter '*.json' | ForEach-Object {
+    $files['/locales/' + $_.Name] = @($_.Name, 'application/json; charset=utf-8', $_.DirectoryName)
+}
 $files['/package.zip'] = @('ROREADER-qt6.zip', 'application/zip', $PSScriptRoot)
 $files['/package.sha256'] = @('ROREADER-qt6.zip.sha256', 'text/plain', $PSScriptRoot)
 $files['/logo.png'] = @('roreader-icon.png', 'image/png', (Join-Path $PSScriptRoot 'assets'))
