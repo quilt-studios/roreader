@@ -104,7 +104,7 @@ These events do not sync the log to storage, so they do not slow the reader.
 
 ## Device scenarios
 
-A Kobo runs the same scenario file through the same built-in player. `bash platforms/kobo/build.sh qt5-eval` (or `qt6-eval`) builds an evaluation package, `build/kobo-qt5-eval/Kobalt-qt5-eval.zip`. It is the normal package plus:
+A Kobo runs the same scenario file through the same built-in player. `bash platforms/kobo/build.sh qt5-eval` (or `qt6-eval`) builds an evaluation package, `build/kobo-qt5-eval/ROREADER-qt5-eval.zip`. It is the normal package plus:
 
 - the scenario player, compiled in;
 - the benchmark book in `kobalt-eval/`, a folder that the library lists;
@@ -121,7 +121,7 @@ To measure a Kobo connected over USB:
 
 ```sh
 bash platforms/kobo/build.sh qt5-eval
-cmake -DPACKAGE=build/kobo-qt5-eval/Kobalt-qt5-eval.zip -DDEVICE=/Volumes/KOBOeReader -P platforms/kobo/install-eval.cmake
+cmake -DPACKAGE=build/kobo-qt5-eval/ROREADER-qt5-eval.zip -DDEVICE=/Volumes/KOBOeReader -P platforms/kobo/install-eval.cmake
 cmake -DDEVICE=/Volumes/KOBOeReader -DOUTPUT=<run>/device-qt5 -P platforms/kobo/collect-eval.cmake
 ```
 
@@ -130,7 +130,7 @@ The install script warns when the Kobo has no dictionary. Between the two comman
 The evaluation can also drive a device through an external runner, a program outside this repository. Pass it with `DEVICE_RUNNER` or `KOBALT_DEVICE_RUNNER`. `run.cmake` builds each target's evaluation package and calls:
 
 ```sh
-<runner> run --package <Kobalt-qt5-eval.zip> --target qt5 --output <run>/device-qt5 [--keep-device <name>]
+<runner> run --package <ROREADER-qt5-eval.zip> --target qt5 --output <run>/device-qt5 [--keep-device <name>]
 ```
 
 The runner installs the package, opens the test book in Kobalt, waits for the `scenario-run-end` event and copies `scenarios.jsonl` into the output folder. It exits with zero when it wrote the file, even if a scenario failed. The comparator still reads `device.json` from runs recorded by an earlier runner.
@@ -147,7 +147,7 @@ Build and install the firmware 4 evaluation package with the filter:
 
 ```sh
 bash platforms/kobo/build.sh qt5-eval
-cmake -DPACKAGE=build/kobo-qt5-eval/Kobalt-qt5-eval.zip -DDEVICE=/Volumes/KOBOeReader -DSCENARIO_FILTER=sleep.close -P platforms/kobo/install-eval.cmake
+cmake -DPACKAGE=build/kobo-qt5-eval/ROREADER-qt5-eval.zip -DDEVICE=/Volumes/KOBOeReader -DSCENARIO_FILTER=sleep.close -P platforms/kobo/install-eval.cmake
 ```
 
 Use the actual device mount path. Eject, restart and open ★ Kobalt Benchmark as described above. Collect results with the normal `collect-eval.cmake` command. These scenarios do not run without a filter. The desktop player skips them because it has no Nickel sleep persistence path.

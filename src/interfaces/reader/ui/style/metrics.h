@@ -37,7 +37,7 @@ inline constexpr Px sliderHeight{72}, sliderInset{25}, sliderRadius{23}, sliderI
 inline constexpr Px sliderFillHeight{4};
 inline constexpr Px sliderMarkerTop{3}, sliderMarkerHeight{8}, sliderMarkerWidth{2};
 inline constexpr Px iconCanvas{64}, actionInkSize{52}, closeInkSize{44}, iconSize{48}, chapterIconSize{44};
-inline constexpr Px iconButtonWidth{72}, typographyButtonWidth{72}, buttonRadius{0};
+inline constexpr Px iconButtonWidth{72}, typographyButtonWidth{72}, buttonRadius{16};
 inline constexpr Px toolbarButtonSize{68};
 inline constexpr Px elidingIconGap{16};
 inline constexpr Px outlinedHeight{54}, outlinedVerticalPadding{8}, outlinedHorizontalPadding{24};

@@ -96,7 +96,7 @@ qt_add_resources(kobalt_android android_manifest PREFIX "/android-assets" FILES 
 set(resources "${KOBALT_ROOT}/assets")
 file(GLOB notices CONFIGURE_DEPENDS "${resources}/notices/*")
 qt_add_resources(kobalt_android notices PREFIX "/kobalt" BASE "${resources}" FILES "${resources}/acknowledgments.json" ${notices}
-    "${resources}/samples/words-and-letters.html" "${resources}/samples/layout.html")
+    "${resources}/samples/words-and-letters.html" "${resources}/samples/layout.html" "${resources}/roreader-icon.png")
 
 if(KOBALT_ANDROID_RELEASE)
     set(KOBALT_ANDROID_PACKAGE com.nicoverbruggen.kobalt)
@@ -107,7 +107,7 @@ set(KOBALT_ANDROID_VERSION_CODE "1" CACHE STRING "Android update number")
 if(NOT KOBALT_ANDROID_VERSION_CODE MATCHES "^[1-9][0-9]*$" OR KOBALT_ANDROID_VERSION_CODE GREATER 2100000000)
     message(FATAL_ERROR "KOBALT_ANDROID_VERSION_CODE must be between 1 and 2100000000")
 endif()
-set_target_properties(kobalt_android PROPERTIES QT_ANDROID_APP_NAME Kobalt QT_ANDROID_PACKAGE_NAME "${KOBALT_ANDROID_PACKAGE}"
+set_target_properties(kobalt_android PROPERTIES QT_ANDROID_APP_NAME ROREADER QT_ANDROID_PACKAGE_NAME "${KOBALT_ANDROID_PACKAGE}"
     QT_ANDROID_VERSION_CODE "${KOBALT_ANDROID_VERSION_CODE}" QT_ANDROID_VERSION_NAME "${KOBALT_VERSION}"
     QT_ANDROID_MIN_SDK_VERSION 28 QT_ANDROID_TARGET_SDK_VERSION 36 QT_ANDROID_COMPILE_SDK_VERSION 36)
 set(package_source "${CMAKE_CURRENT_BINARY_DIR}/android-package")

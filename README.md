@@ -1,95 +1,93 @@
 <p align="center">
-  <img src="assets/kobalt.svg" alt="Kobalt" width="320" height="208">
+  <img src="assets/roreader-logo.png" alt="ROREADER" width="420">
 </p>
 
-**Kobalt is an alternative EPUB reader with a CREngine renderer and a Qt reading interface, with a focus on speed and an excellent user experience.**
+# ROREADER
 
-The reader app is its own thing, and as such is planned to be ported to various platforms. On Android, it runs as a standalone app, and on Kobo it runs somewhat integrated into Kobo's own OS.
+**Ein EPUB-Reader mit Werkzeugen, Sketchpad und Offline-Spielen für Kobo und kompatible tolino-Geräte.**
 
-### How does the Kobo version work?
+ROREADER baut auf Kobalt auf und verwendet dessen Qt-Oberfläche und CREngine-Renderer. Du kannst DRM-freie EPUBs lesen, Zeichnungen anfertigen, Textdateien bearbeiten und Shell-Kommandos direkt auf dem Reader ausführen. Geschützte Bücher, PDFs und andere nicht unterstützte Formate werden weiterhin vom eingebauten Reader geöffnet.
 
-The Kobo version opens DRM-free EPUBs, including DRM-free books purchased from Kobo. Kobo's OS still handles dictionaries, reading progress and reading sessions. You can choose Kobalt as your default reader or open a book with it from the book's long-press menu.
+## Werkzeuge auf dem Gerät
 
-Protected books, previews, PDFs and other unsupported formats show “Opening in built-in reader” and continue in Kobo's regular reader app.
+Tippe im Lesemenü auf das **Werkzeug-Symbol**. Alternativ: **Einstellungen → System → Terminal · Sketchpad · Texteditor**. Der Tag-/Nacht-Schalter im Lesemenü wechselt das Design ohne den Umweg über die Einstellungen.
 
-> [!NOTE]
-> This project intentionally contains no service for loading decrypted resources from protected books. Books with any kind of DRM are automatically opened by the built-in reader.
+| Werkzeug | Funktionen |
+| --- | --- |
+| Terminal | Befehlsverlauf, bleibender Arbeitsordner nach `cd`, Eingabe an laufende Programme, UTF-8-Ausgabe und Textexport. Jeder Befehl läuft maximal 60 Sekunden mit begrenzter Ausgabe. Interaktive Vollbildprogramme wie `vi` benötigen eine PTY und werden nicht unterstützt. |
+| Sketchpad | Geglättete Linien, wählbare Stiftbreite, Grau/Schwarz, Radierer, Rückgängig und Wiederholen. Touch und gemeldeter Stiftdruck werden verarbeitet. PNGs öffnen und neue Zeichnungen exportieren. Änderungen werden für kleine Neuzeichenbereiche gebündelt; die echte Reaktionszeit hängt von Gerät und E-Ink-Treiber ab. |
+| Texteditor | UTF-8-Dateien einschließlich BOM öffnen und atomar speichern, Suche, Bildschirmtastatur, neue Zeilen und Rückgängig. Dateien bis 1 MiB. Extern geänderte oder ungeöffnet vorhandene Dateien werden nicht still überschrieben. |
+| Dateien | Dateien im ROREADER-Dokumentordner öffnen, umbenennen, nach Bestätigung löschen oder ihre SHA-256-Prüfsumme anzeigen. PNGs öffnen im Sketchpad, Textdateien im Editor. |
+| Gerät / Mods | Firmware-, Qt-, System-, Akku- und Speicherinformationen, Diagnoseexport, lokale Diagnosebefehle und Sicherungen der ROREADER-Dokumente. Keine automatischen Firmware-Patches. |
+| Spiele | Tic-Tac-Toe gegen den Reader oder zu zweit, Sudoku mit Konfliktprüfung und Tipps sowie Memory. Alles offline; Spielstände bleiben während der geöffneten Werkzeuge im Speicher. |
 
-### What about the other versions?
+Texte und Zeichnungen liegen auf dem Reader in **`/mnt/onboard/ROREADER/`**, also im Ordner **`ROREADER`** auf dem USB-Laufwerk. Auf dem Linux-Desktop liegen sie unter `Dokumente/ROREADER`. Ungespeicherte Entwürfe bleiben beim Wechsel zwischen den Werkzeugen erhalten; beim Schließen fragt die Oberfläche nach. Zum dauerhaften Aufbewahren bitte speichern. Shell-Kommandos laufen mit den Rechten des Reader-Prozesses; prüfe Befehle vor dem Ausführen.
 
-The Android version is now available for testing, as of beta 4. You can download the APK file and install it manually. For the other versions, the source code is included in this repository. The Mac version is not ready for general release yet, it's for local testing.
+**Dokumente sichern** erstellt einen neuen `backup-…`-Ordner mit Dateikopien und SHA-256-Manifest. Diese Sicherung umfasst nur die Dateien im ROREADER-Dokumentordner, nicht die Lesedatenbank, fremde Bücher oder die Firmware. Der Dateimanager zeigt die Dateien dieses Dokumentordners; Sicherungsunterordner lassen sich über USB öffnen. Verlauf und Spielstände werden nicht automatisch auf die SD-Karte geschrieben.
 
-#### Android
+## Online installieren
 
-The Android version has a Library feature that can scan a directory for books, but it also opens unprotected EPUBs through the document picker or Open with. It keeps reading progress and bookmarks locally. See [Android setup, building, signing and limitations](doc/building.md#android) for more information.
+Die GitHub-Pages-Seite wird aus demselben Installer-Code wie die Windows-Oberfläche gebaut. Öffne sie auf deinem Computer in einer aktuellen Version von **Chrome oder Edge**, verbinde den Reader per USB und wähle sein Hauptverzeichnis über **„Reader-Laufwerk auswählen“**. Eine BAT oder zusätzliche App ist dafür nicht erforderlich. Das bereitgestellte Qt6-Paket wird automatisch heruntergeladen und geprüft; deine Geräte- und Buchdaten werden nicht hochgeladen.
 
-#### macOS
+Der Workflow [ROREADER website](.github/workflows/pages.yml) veröffentlicht die Seite über GitHub Pages. Aktiviere dafür einmalig unter **Settings → Pages → Source → GitHub Actions** die Bereitstellung und starte den Workflow. Die tatsächlich verfügbare Adresse steht nach erfolgreicher Bereitstellung im Pages-Deployment des Repositories.
 
-The macOS development app uses the same reader in a resizable window for testing books. For more information, take a look at [the documentation](doc/building.md#mac).
+## Windows: in Chrome installieren
 
-## Compatibility and installation
+1. Lade [ROREADER-Windows-Installer.zip](ziprelease/ROREADER-Windows-Installer.zip) herunter und entpacke es vollständig auf deinem Windows-PC. Die [SHA-256-Prüfsumme](ziprelease/ROREADER-Windows-Installer.zip.sha256) liegt daneben.
+2. Verbinde den Reader per USB und bestätige am Gerät die Verbindung zum Computer. Sichere deine Bücher und Lesedaten.
+3. Starte **`Install-ROREADER.bat`**. Die Datei öffnet den lokalen Installer in **Google Chrome**. Chrome muss installiert sein; Python und Administratorrechte werden nicht benötigt.
+4. Klicke **„Reader-Laufwerk auswählen“** und wähle das **Hauptverzeichnis `/`** deines Geräts, zum Beispiel `E:\`. Wähle weder `.kobo` noch `.adds` als Ausgangsordner.
+5. Erlaube Chrome den Zugriff auf diesen Ordner. Das mitgelieferte Qt6-Paket und seine SHA-256-Prüfsumme werden automatisch geladen. Prüfe die erkannte Firmware und bestätige deine Datensicherung.
+6. Klicke **„ROREADER auf den Reader kopieren“**. Nach erfolgreicher Kopierprüfung das Laufwerk sicher auswerfen, USB trennen und die Installation auf dem Reader abwarten.
 
-### Install on Kobo
+Lass das Konsolenfenster währenddessen geöffnet. Es betreibt ausschließlich den lokalen Dateiserver; das Schließen beendet ihn. Dateien werden direkt über Chromes Ordnerfreigabe auf das Gerät geschrieben. Es gibt keinen Upload und keine Anmeldung. Eine vorhandene ROREADER/Kobalt-Installation wird erkannt: **ROREADER aktualisieren** ersetzt die Programmdateien und bereitet das neue Gerätepaket vor. Bücher, Lesedaten, Einstellungen und eigene Dokumente bleiben erhalten. Ein bereits auf dem Gerät liegendes Update-Archiv muss zuerst am Reader abgeschlossen werden.
 
-> [!IMPORTANT]
-> Keep a backup of your books and reading data before testing, no matter whether you use the website or not. I have done my best to make Kobalt as stable and safe as possible, but you should always have a backup, just to be safe.
+Wenn du die BAT direkt aus dem Quellcode startest, kannst du stattdessen dein gebautes **`ROREADER-qt6.zip`** und die Prüfsumme aus **`ROREADER-qt6.zip.sha256`** auswählen. Die Weboberfläche benötigt ein echtes Gerätepaket; sie lädt keine fremde Release-Version als Ersatz.
 
-#### Automatic installation via Chrome
+## Firmware und Modelle
 
-The easiest way is via [the website](https://kobalt.nicoverbruggen.be). Click on **Install or remove on Kobo** and you should follow the steps on the website. The website will check if your device is compatible.
+Der Installationsweg richtet sich an **Kobo- und tolino-Geräte mit Kobo-basierter Firmware 5.x oder 6.x** und verwendet das Qt6-Paket. Der Installer prüft die Firmwarefamilie anhand von `.kobo/version`; die Anwendung behält ihre Prüfungen der benötigten Firmware-Symbole und Objektlayouts.
 
-#### Manual installation
+**Eine Unterstützung aller Modelle und aller Firmwarestände ist noch nicht auf echten Geräten nachgewiesen.** Die erkannte Versionsnummer bestätigt weder ein kompatibles Gerät noch eine erfolgreich abgeschlossene Installation. Ältere Android-basierte tolino-Modelle sind nicht Teil dieses USB-Installationswegs. Ein gegebenenfalls benötigter Mod-Manager muss ebenfalls zur installierten Firmware passen. Veränderte Firmware-ABIs dürfen die Kompatibilitätsprüfungen nicht umgehen.
 
-There are two installation packages: one for the firmware 4.x line, and one for the latest beta, which is currently at version 6.x. Choose the right one for your Kobo, so check what software version you have installed first!
+Die vorhandenen Qt5- und Android-Buildpfade bleiben im Quellcode. Der neue Windows-Installer akzeptiert ausschließlich das normale Qt6-Gerätepaket, keine Qt5- oder Evaluationspakete.
 
-| Package | Firmware
-|---|---|
-| `Kobalt-qt5.zip` | 4.38.21908 and later 4.x (tested up to 4.46)
-| `Kobalt-qt6.zip` | 5.18 and later 5.x, and 6.x (tested up to 6.0.2)
+## Selbst bauen und testen
 
-_(*) Due to how software updates work on Kobo OS 6, you may need a future version of [NickelModManager](https://github.com/nicoverbruggen/NickelModManager) to avoid needing to reinstall mods._
+Ausführliche Voraussetzungen und Plattformbefehle stehen in [Building](doc/building.md). Linux-Entwicklung verwendet ein vorbereitetes **Qt 6.11+ SDK** mit Core, Gui, Widgets, Network und Sql; Tests benötigen zusätzlich Test, passende GuiPrivate-Header und das Minimal-Plugin. Qt wird nicht als Teil von ROREADER kompiliert.
 
-1. Connect your Kobo over USB and extract the ZIP package on your computer. Show hidden files so you can see `.adds` and `.kobo`.
-2. Copy the complete `.adds` folder to the root of the Kobo drive. Merge it with the existing folder and replace matching package files. Keep other apps, settings and reading data.
-3. Copy the complete `.kobo` folder from the extracted package to the same drive root. Merge it with the existing folder. Firmware 4 uses `.kobo/KoboRoot.tgz`; firmware 5 and 6 use `.kobo/Kobo.tgz`.
-4. Eject the Kobo safely, disconnect USB and let it install the update.
+```sh
+cd platforms/desktop
+cmake --preset linux -DCMAKE_PREFIX_PATH=/pfad/zum/qt-sdk
+cmake --build --preset linux
+cmake --build --preset linux-light-tests
+ctest --preset linux-light
+```
 
-Copy every file supplied in the ZIP, keeping its folder path. Copy `.adds` before `.kobo` so the assets are present when the update starts. Do not copy only the `.tgz` file or unpack it yourself. Kobalt creates its support files and installation marker on first startup.
+Der interne Desktop-Buildtarget und die ausführbare Datei heißen aus Kompatibilitätsgründen weiterhin `Kobalt`; Oberfläche und Gerätepakete heißen ROREADER. Auch `.adds/kobalt`, bestehende Profile, Datenbanken und Plugin-Identitäten bleiben erhalten, damit vorhandene Lesedaten weiterverwendet werden. Quellcode-Namensräume und CMake-Optionen mit `KOBALT_` sind keine separaten Anwendungen.
 
-### Removing Kobalt from Kobo devices
+Für das Firmware-5/6-Paket wird das gepinnte, vorbereitete `kobuild`-Qt6-Image benötigt:
 
-#### Automatic removal via Chrome
+```sh
+docker pull "$(sh platforms/sdk-image.sh qt6)"
+bash platforms/kobo/build.sh qt6
+cmake -DROOT="$PWD" \
+  -DPACKAGE_FILE="$PWD/build/kobo-qt6/ROREADER-qt6.zip" \
+  -P platforms/installer/package.cmake
+```
 
-Like the installation, the easiest way is via [the website](https://kobalt.nicoverbruggen.be). Click on **Install or remove on Kobo** and you should follow the steps on the website. Removal is the easiest this way.
+Das Gerätepaket liegt in `build/kobo-qt6/`; das Windows-Bundle inklusive BAT, Weboberfläche, Paket und Prüfsumme liegt in **`build/installer/ROREADER-Windows-Installer.zip`**. Build und Paketprüfung ersetzen keinen Installationstest auf dem Gerät.
 
-#### Manual removal
+Die ZIP- und Firmwareprüfungen der Weboberfläche lassen sich mit Node.js ausführen:
 
-You can also connect your device via USB and remove the uninstallation file (`.adds/kobalt/uninstall`) which will cause Kobalt to remove itself but retain your configuration files, annotations and more. If you would like to remove _everything_, remove `.adds/kobalt` in its entirety. After removing either of these, make sure to safely eject your device.
+```sh
+node --test tests/installer.test.mjs
+```
 
-## Issues and contributions
+Die native Light-Suite enthält auch die Funktionsprüfungen der Gerätewerkzeuge. Screenshots laufen headless über `linux-light-screenshots`; die vollständige Galerie und weitere Testgruppen sind in [Native validation](doc/validation.md) beschrieben. Der Entwickler-Launcher startet über `./start.sh`; `./start.sh --check` prüft seine Voraussetzungen, ohne ein Fenster zu öffnen.
 
-This repository contains Kobalt's public source. Report bugs via the Discussions tab here on GitHub. Issues are reserved for contributors for managing the project.
+## Herkunft und Lizenz
 
-If you have a sample book that exhibits an issue, please attach it if you are permitted to do so, this can help find issues more quickly.
+ROREADER ist ein Fork von Kobalt, kein offizielles Produkt von Rakuten Kobo oder tolino. Die ursprünglichen Urheberhinweise und [Acknowledgments](doc/acknowledgements.md) bleiben erhalten. CREngine stammt aus dem [KOReader](https://koreader.rocks/)-Umfeld. Die neuen Logo-Grafiken wurden für ROREADER generiert.
 
-## Acknowledgements
-
-For a complete list, please check out [the acknowledgements](doc/acknowledgements.md) document.
-
-### KOReader
-
-[KOReader](https://koreader.rocks/) is an amazing piece of software, and some of its source is used (the renderer, for example) to make this project possible. A big thanks to the contributors of KOReader. If you feel like Kobalt is too limited in its features, you may want to give it a shot. 
-
-## Disclaimers
-
-1. This project is not affiliated with Rakuten Kobo Inc. or the tolino alliance. Kobo and tolino are trademarks of their respective owners.
-2. The creator of Kobalt does not encourage or endorse the removal of DRM, and Kobalt does not allow for it. Support your favorite author by purchasing their books.
-3. This project was made with the help of agentic engineering with models from OpenAI and Anthropic. I would not have been able to make this project otherwise. Instructions intended for agents are included in [AGENTS.md](AGENTS.md).
-
-## License
-
-Like KOReader, this project is available under an open source license.
-
-Kobalt's own source code uses the MIT license in [LICENSE](LICENSE). CREngine patches use GNU GPL v2 or later, and Qt patches use Qt's licenses. Third-party code and assets retain their own licenses and notices in `assets/notices/` and `platforms/kobo/toolchains/nickelhook-qt6/`.
-
-The combined package includes GPL and AGPL code and is distributed under GNU AGPL v3, without warranty. Binary releases include the corresponding source and dependency sources.
+Der Anwendungscode steht unter der [MIT-Lizenz](LICENSE); Drittbibliotheken und kombinierte Pakete unterliegen ihren jeweiligen Lizenzbedingungen, einschließlich GPL und AGPL. Das kombinierte Paket wird unter GNU AGPL v3 ohne Gewährleistung verteilt. Siehe `assets/notices/` für die enthaltenen Lizenztexte.

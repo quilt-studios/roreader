@@ -403,6 +403,12 @@ void Reader::syncReadingControls() {
                      panels->currentIndex() != kobalt::reader::TypographyPage);
     findChild<QPushButton *>("rrSettings")->setChecked(general->isVisible());
     const bool settingsOpen = general->isVisible();
+    if (auto *tools = findChild<QPushButton *>("rrQuickTools")) tools->setVisible(!settingsOpen);
+    if (auto *theme = findChild<QPushButton *>("rrQuickTheme")) {
+        theme->setVisible(!settingsOpen);
+        theme->setChecked(preferences.value("dark_mode").toBool());
+        theme->setEnabled(!model->busy() && !appearanceEdit.applying());
+    }
     for (auto *action : std::initializer_list<QWidget *>{toolbarComposition.exitAction, toolbarComposition.settings,
                                                        toolbarComposition.bookmarks, toolbarComposition.annotate,
                                                        toolbarComposition.search})

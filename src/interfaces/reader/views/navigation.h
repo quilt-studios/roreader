@@ -32,6 +32,7 @@ struct ToolbarComposition {
     ui::WifiIndicator *wifi = nullptr;
     QPushButton *formattingWarning = nullptr;
     QPushButton *search = nullptr, *sync = nullptr;
+    QPushButton *tools = nullptr, *theme = nullptr;
 };
 enum class NavigationDestination { Chapters, Seek, Text, Layout, Light, Stats, Search };
 struct NavigationState {
@@ -132,7 +133,7 @@ private:
     ui::BluetoothIndicator *bluetooth;
     ui::WifiIndicator *wifi;
     QPushButton *formattingWarning;
-    QPushButton *search, *sync;
+    QPushButton *search, *sync, *tools, *theme;
     QString searchStyle, syncStyle;
     ui::ButtonPaintMode syncPaint = ui::ButtonPaintMode::Native;
     ui::ButtonPaintMode searchPaint = ui::ButtonPaintMode::Native;

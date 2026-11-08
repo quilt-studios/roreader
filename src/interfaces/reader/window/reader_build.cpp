@@ -7,6 +7,7 @@
 #include "interfaces/reader/ui/style/theme.h"
 #include "assets/bundled_fonts.h"
 #include "reader_p.h"
+#include "interfaces/reader/tools/tools_panel.h"
 #include "dictionaries/manager.h"
 #include "support/qt_compat.h"
 #include "support/strings.h"
@@ -65,7 +66,8 @@ protected:
                                                                             : QPalette::WindowText));
         const auto bounds = contentsRect().adjusted(margin(), margin(), -margin(), -margin());
         // Font line boxes include padding above and below the visible letters.
-        ui::drawOpticalText(painter, bounds.translated(0, m::chrome::returnTitleOffset), text(), true);
+        // Keep the caption anchored to the arrow when its wording changes.
+        ui::drawOpticalText(painter, bounds.translated(0, m::chrome::returnTitleOffset), text(), false);
     }
 };
 class ReturnButton final : public ui::Button {
@@ -649,6 +651,16 @@ void Reader::buildToolbar() {
                                                      openSettings();
                                              });
     toolbarComposition.settings->setCheckable(true);
+    toolbarComposition.tools = iconButton(topControls, top, "rrQuickTools", QStringLiteral("Werkzeuge und Spiele"), ControlIcon::Advanced,
+               [this] { openTools(this, services.keyboard); });
+    auto *quickTheme = iconButton(topControls, top, "rrQuickTheme", QStringLiteral("Tag / Nacht"), ControlIcon::Light,
+                                  [this] {
+                                      if (model->busy() || appearanceEdit.applying()) return;
+                                      applyDarkMode(!preferences.value("dark_mode").toBool());
+                                      findChild<QPushButton *>("rrQuickTheme")->setChecked(preferences.value("dark_mode").toBool());
+                                  });
+    quickTheme->setCheckable(true);
+    toolbarComposition.theme = quickTheme;
     toolbarComposition.clock = menuClock;
     toolbarComposition.session = menuSession;
     toolbarComposition.battery = menuBattery;
@@ -657,7 +669,8 @@ void Reader::buildToolbar() {
             continue;
         if (button->objectName() != "rrSettings" && button->objectName() != "rrBookmarks" &&
             button->objectName() != "rrAnnotate" && button->objectName() != "rrFormattingWarning" &&
-            button->objectName() != "rrSearchOpen" && button->objectName() != "rrKosyncManual")
+            button->objectName() != "rrSearchOpen" && button->objectName() != "rrKosyncManual" &&
+            button->objectName() != "rrQuickTools" && button->objectName() != "rrQuickTheme")
             topActions.append(button);
         if (auto *action = dynamic_cast<kobalt::ui::Button *>(button))
             action->setPaintMode(kobalt::ui::ButtonPaintMode::ToolbarSquare);

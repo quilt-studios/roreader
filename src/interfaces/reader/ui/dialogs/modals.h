@@ -23,6 +23,9 @@ public:
     void adaptiveActions(const QVector<QPushButton *> &buttons);
     void fitToWidth(int width);
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
     QVBoxLayout *contentRows;
     QBoxLayout *actionRows = nullptr;

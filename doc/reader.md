@@ -31,7 +31,7 @@ This build is for renderer testing. It has no Nickel library integration, bright
 
 ## Installation
 
-For the first public beta, download `Kobalt-qt5.zip` from the release. To build a firmware 4 package locally, run `bash platforms/kobo/build.sh qt5` and use `build/kobo-qt5/Kobalt-qt5.zip`.
+For the first public beta, download `ROREADER-qt5.zip` from the release. To build a firmware 4 package locally, run `bash platforms/kobo/build.sh qt5` and use `build/kobo-qt5/ROREADER-qt5.zip`.
 
 1. Extract the full ZIP on your computer and show hidden files.
 2. Copy the complete `.adds` folder from the ZIP to the root of the Kobo drive. Merge folders and replace matching package files. Keep other apps, settings and reading data.

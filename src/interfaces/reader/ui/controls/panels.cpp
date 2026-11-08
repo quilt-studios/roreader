@@ -10,11 +10,28 @@
 #include <QResizeEvent>
 #include <QPainterPath>
 #include <QVariant>
+#include <QPixmap>
 #include <cmath>
 
 namespace kobalt::ui {
 namespace m = metrics;
 void paintBrandIcon(QPainter &painter, const QRectF &bounds, const QColor &ink) {
+    static const QPixmap mark(QStringLiteral(":/kobalt/roreader-icon.png"));
+    if (!mark.isNull()) {
+        const auto scaled = mark.scaled(bounds.size().toSize(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QPixmap colored(scaled.size());
+        colored.fill(Qt::transparent);
+        QPainter tint(&colored);
+        tint.drawPixmap(0, 0, scaled);
+        tint.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        tint.fillRect(colored.rect(), ink);
+        tint.end();
+        painter.save();
+        painter.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter.drawPixmap(bounds, colored, colored.rect());
+        painter.restore();
+        return;
+    }
     painter.save();
     painter.translate(bounds.topLeft());
     painter.scale(bounds.width() / m::opening::icon.width(), bounds.height() / m::opening::icon.height());
@@ -344,6 +361,15 @@ Panel::Panel(QWidget *parent, Edges separators) : QFrame(parent), separators(sep
     setAttribute(Qt::WA_OpaquePaintEvent);
 }
 void Panel::paintEvent(QPaintEvent *event) {
+    if (cornerRadius > 0) {
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        const int border = edgeWidth > 0 ? edgeWidth : int(m::control::border);
+        painter.setPen(QPen(palette().color(softEdges ? QPalette::Mid : QPalette::WindowText), border));
+        painter.setBrush(fill == QPalette::Midlight ? sectionColor(this) : palette().color(fill));
+        painter.drawRoundedRect(QRectF(rect()).adjusted(border / 2.0, border / 2.0, -border / 2.0, -border / 2.0), cornerRadius, cornerRadius);
+        return;
+    }
     // Opaque widgets skip Qt's background fill. Paint our paper in the same
     // pass as the controls, without repainting the book underneath.
     {

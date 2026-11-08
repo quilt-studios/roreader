@@ -1,0 +1,45 @@
+name: ROREADER website
+
+on:
+  push:
+    branches: [main, feature/roreader-tools-installer]
+    paths:
+      - platforms/installer/**
+      - assets/roreader-icon.png
+      - ziprelease/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: roreader-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify and extract bundled device package
+        run: |
+          cd ziprelease
+          sha256sum -c ROREADER-Windows-Installer.zip.sha256
+          unzip -q ROREADER-Windows-Installer.zip -d "$RUNNER_TEMP/roreader-installer"
+      - name: Build static site with verified package
+        run: node platforms/installer/build-site.mjs --package "$RUNNER_TEMP/roreader-installer/ROREADER-Windows-Installer/ROREADER-qt6.zip" --output build/pages
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/pages
+      - uses: actions/deploy-pages@v4
+        id: deployment

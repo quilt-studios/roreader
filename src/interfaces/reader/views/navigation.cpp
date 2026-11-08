@@ -38,7 +38,7 @@ protected:
         if (status)
             painter.fillRect(0, status - border, width(), border, ink);
         for (int cell = 1; cell <= property("right_actions").toInt(); ++cell) {
-            painter.fillRect(width() - cell * c::cellWidth - border, status, border, height() - status, ink);
+            painter.fillRect(width() - cell * property("cell_width").toInt() - border, status, border, height() - status, ink);
         }
         ui::paintEdges(painter, rect(), Qt::BottomEdge, palette().color(QPalette::WindowText), toolbarBorder);
     }
@@ -274,7 +274,7 @@ Navigation::Navigation(QWidget *parent, const ToolbarComposition &controls)
     : bar(new BottomNavigation(parent)), toolbar(controls.panel), toolbarRows(controls.rows),
       exitAction(controls.exitAction), settings(controls.settings), bookmarks(controls.bookmarks),
       annotate(controls.annotate), clock(controls.clock), session(controls.session), battery(controls.battery),
-      bluetooth(controls.bluetooth), wifi(controls.wifi), formattingWarning(controls.formattingWarning), search(controls.search), sync(controls.sync) {
+      bluetooth(controls.bluetooth), wifi(controls.wifi), formattingWarning(controls.formattingWarning), search(controls.search), sync(controls.sync), tools(controls.tools), theme(controls.theme) {
     upperEdge = new ReadingRule(parent);
     upperEdge->setObjectName("rrNavigationUpperEdge");
     lowerEdge = new ReadingRule(parent);
@@ -438,32 +438,27 @@ void Navigation::update(QSize size, const NavigationState &state) {
     }
     session->setGeometry(sessionInset, statusTop, qMax(0, size.width() - 2 * sessionInset),
                          ui::metrics::panel::statusHeight);
-    settings->setGeometry(size.width() - c::cellWidth, statusHeight(), c::cellWidth, c::actionHeight);
-    bookmarks->setGeometry(size.width() - 2 * c::cellWidth, statusHeight(), c::cellWidth, c::actionHeight);
-    if (annotate) {
-        annotate->setGeometry(size.width() - 3 * c::cellWidth, statusHeight(), c::cellWidth, c::actionHeight);
+    QVector<QWidget *> actions{settings, bookmarks};
+    for (auto *action : std::initializer_list<QWidget *>{annotate, search, sync, formattingWarning, tools, theme})
+        if (action && !action->isHidden()) actions.append(action);
+    const int rightActions = actions.size();
+    // Keep every action reachable at large interface scales and on narrow readers.
+    const int cellWidth = qMin(int(c::cellWidth), size.width() / (rightActions + 1));
+    for (int index = 0; index < actions.size(); ++index) {
+        auto *action = actions[index];
+        action->setFixedSize(cellWidth, c::actionHeight);
+        action->setGeometry(size.width() - (index + 1) * cellWidth, statusHeight(), cellWidth, c::actionHeight);
+        if (auto *button = dynamic_cast<ui::Button *>(action))
+            button->setPaintMode(ui::ButtonPaintMode::ToolbarCell);
     }
-    if (search) {
-        search->setGeometry(size.width() - (annotate ? 4 : 3) * c::cellWidth, statusHeight(), c::cellWidth,
-                            c::actionHeight);
-    }
-    const int syncActions = sync && !sync->isHidden() ? 1 : 0;
-    if (sync) {
-        sync->setGeometry(size.width() - ((annotate ? 4 : 3) + (search ? 1 : 0)) * c::cellWidth,
-                          statusHeight(), c::cellWidth, c::actionHeight);
-    }
-    if (formattingWarning) {
-        formattingWarning->setGeometry(size.width() - ((annotate ? 4 : 3) + (search ? 1 : 0) + syncActions) * c::cellWidth,
-                                       statusHeight(), c::cellWidth, c::actionHeight);
-    }
-    const int rightActions =
-        (formattingWarning && !formattingWarning->isHidden() ? 3 : 2) + (annotate ? 1 : 0) + (search ? 1 : 0) + syncActions;
-    // A large interface scale can leave too little room for the exit caption.
-    // The arrow then keeps a cell of its own, as each action does.
     const int exitWidth = exitAction->sizeHint().width();
     exitAction->setGeometry(0, statusHeight(),
-                            exitWidth <= size.width() - rightActions * c::cellWidth ? exitWidth : int(c::cellWidth),
-                            c::actionHeight);
+                           exitWidth <= size.width() - rightActions * cellWidth ? exitWidth : cellWidth,
+                           c::actionHeight);
+    if (rules->property("cell_width").toInt() != cellWidth) {
+        rules->setProperty("cell_width", cellWidth);
+        rules->update();
+    }
     if (rules->property("right_actions").toInt() != rightActions) {
         rules->setProperty("right_actions", rightActions);
         rules->update();
