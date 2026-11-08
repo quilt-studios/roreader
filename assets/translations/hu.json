@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminál · Sketchpad · Szövegszerkesztő",
     "Sprache": "Nyelv",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Nyelv aktív a könyv elfogadása és újranyitása után.",
-    "Automatisch (Gerätesprache)": "Automatikus (az eszköz nyelve)"
+    "Automatisch (Gerätesprache)": "Automatikus (az eszköz nyelve)",
+    "Aufnahmeordner nicht verfügbar.": "A rögzítési mappa nem érhető el.",
+    "Aufnahmedatei existiert bereits.": "A rögzítési fájl már létezik.",
+    "Aufnahme konnte nicht gespeichert werden.": "A felvételt nem sikerült elmenteni.",
+    "JPEG-Encoder nicht verfügbar.": "JPEG kódoló nem érhető el.",
+    "Keine Videobilder aufgenommen.": "Nincs videokép rögzítve.",
+    "Bildschirmaufnahme": "Képernyőfelvétel",
+    "Screenshot speichern": "Képernyőkép mentése",
+    "Video stoppen": "Videó leállítása",
+    "Video starten": "Indítsa el a videót",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "PNG képernyőkép vagy AVI videó a ROREADER nézetről. Videó: 2 képkocka/s, legfeljebb 30 másodperc és 16 MiB. Nincs hangfelvétel.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Helyszín: ROREADER/felvételek. A látható menü és a leállító kapcsoló megjelenhet a felvételen."
   },
   "web": {
     "ROREADER installieren": "Telepítse a ROREADER-t",

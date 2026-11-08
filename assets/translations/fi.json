@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Pääte · Luonnoslehtiö · Tekstieditori",
     "Sprache": "Kieli",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Kieli aktiivinen kirjan hyväksymisen ja uudelleenavauksen jälkeen.",
-    "Automatisch (Gerätesprache)": "Automaattinen (laitteen kieli)"
+    "Automatisch (Gerätesprache)": "Automaattinen (laitteen kieli)",
+    "Aufnahmeordner nicht verfügbar.": "Tallennuskansio ei ole käytettävissä.",
+    "Aufnahmedatei existiert bereits.": "Tallennustiedosto on jo olemassa.",
+    "Aufnahme konnte nicht gespeichert werden.": "Tallennusta ei voitu tallentaa.",
+    "JPEG-Encoder nicht verfügbar.": "JPEG-kooderi ei ole saatavilla.",
+    "Keine Videobilder aufgenommen.": "Videokuvia ei ole tallennettu.",
+    "Bildschirmaufnahme": "Kuvakaappaus",
+    "Screenshot speichern": "Tallenna kuvakaappaus",
+    "Video stoppen": "Lopeta video",
+    "Video starten": "Aloita video",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "PNG-kuvakaappaus tai AVI-video ROREADER-näkymästä. Video: 2 kuvaa/s, jopa 30 sekuntia ja 16 MiB. Ei äänitallennusta.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Sijainti: ROREADER/nauhoitukset. Näkyvä valikko ja pysäytyskytkin voivat näkyä tallenteessa."
   },
   "web": {
     "ROREADER installieren": "Asenna ROREADER",

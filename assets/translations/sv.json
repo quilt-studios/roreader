@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminal · Skissblock · Textredigerare",
     "Sprache": "Språk",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Språk aktivt efter att ha accepterat och öppnat boken igen.",
-    "Automatisch (Gerätesprache)": "Automatisk (enhetsspråk)"
+    "Automatisch (Gerätesprache)": "Automatisk (enhetsspråk)",
+    "Aufnahmeordner nicht verfügbar.": "Inspelningsmappen är inte tillgänglig.",
+    "Aufnahmedatei existiert bereits.": "Inspelningsfil finns redan.",
+    "Aufnahme konnte nicht gespeichert werden.": "Inspelningen kunde inte sparas.",
+    "JPEG-Encoder nicht verfügbar.": "JPEG-kodare inte tillgänglig.",
+    "Keine Videobilder aufgenommen.": "Inga videobilder inspelade.",
+    "Bildschirmaufnahme": "Skärmdump",
+    "Screenshot speichern": "Spara skärmdump",
+    "Video stoppen": "Stoppa video",
+    "Video starten": "Starta video",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "PNG-skärmdump eller AVI-video av ROREADER-vyn. Video: 2 bilder/s, upp till 30 sekunder och 16 MiB. Ingen ljudinspelning.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Plats: ROREADER/inspelningar. Den synliga menyn och stoppknappen kan visas i inspelningen."
   },
   "web": {
     "ROREADER installieren": "Installera ROREADER",

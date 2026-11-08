@@ -1,5 +1,6 @@
 #include "support/localization.h"
 #include "tools_panel.h"
+#include "interfaces/reader/capture/screen_capture.h"
 #include "sketch_canvas.h"
 #include "games_panel.h"
 #include <QButtonGroup>
@@ -714,6 +715,8 @@ class Tools final : public QWidget {
         button(page, actions, "rrDeviceExport", i18n::text("Exportieren"),
                [this] { exportReport(deviceReport->toPlainText().toUtf8(), "diagnose"); });
         button(page, rows, "rrDocumentsBackup", i18n::text("Dokumente sichern"), [this] { backupDocuments(); });
+        button(page, rows, "rrScreenCaptureOpen", i18n::text("Bildschirmaufnahme"),
+               [this] { openScreenCapture(parentWidget(),directory); });
         auto *diagnostics = new QGridLayout;
         rows->addLayout(diagnostics);
         const QStringList names{i18n::text("Prozesse"), i18n::text("Speicher"), i18n::text("Netzwerk"),
@@ -1186,9 +1189,10 @@ QWidget *openTools(QWidget *host, KeyboardFactory keyboard, const QString &direc
 }
 bool toolsBusy(const QWidget *host) {
     const auto *widget = host->findChild<QWidget *>("rrTools", Qt::FindDirectChildrenOnly);
-    return widget && widget->property("utilityBusy").toBool();
+    return screenCaptureBusy(host) || (widget && widget->property("utilityBusy").toBool());
 }
 void stopTools(QWidget *host) {
+    stopScreenRecording(host);
     if (auto *widget = host->findChild<QWidget *>("rrTools", Qt::FindDirectChildrenOnly))
         static_cast<Tools *>(widget)->quiesce();
 }

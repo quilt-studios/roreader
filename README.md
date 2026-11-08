@@ -33,6 +33,14 @@ Text files and drawings are stored in **`/mnt/onboard/ROREADER/`**, the **`ROREA
 
 **Back up documents** creates a new `backup-…` folder containing copies and a SHA-256 manifest. This covers files in the ROREADER documents folder, not the reading database, other books or firmware. The file manager lists files in that documents folder; backup subfolders can be opened over USB. Command history and game state are not automatically written to the SD card.
 
+## Screenshots and video
+
+Open **Tools → Device / Mods → Screen capture**. Choose **Save screenshot** for a full-resolution PNG of the current ROREADER view, or **Start video** for a short Motion JPEG AVI clip. Close Tools to record your reading session, then use the floating **Stop** button. Menu contents and the Stop button can appear in the recording.
+
+Videos use 2 frames per second, a maximum frame size of 800 × 1080, and a limit of 30 seconds or 16 MiB. They record the ROREADER view without audio; the Nickel home screen and other applications are outside this capture. JPEG encoding and file writes run on a worker. Clips are finalized when stopped; sleep, USB transitions and reader closing stop the session and finish pending writes.
+
+Exports are saved under **`ROREADER/recordings/`** on the USB drive. PNG files preserve screenshot resolution; AVI files can be opened in a player such as VLC. Wait for saving to finish before transferring them. These are local exports and do not change your books or reading profiles. Physical-device recording performance still needs validation.
+
 ## Install online
 
 The GitHub Pages site uses the same installer code as the Windows bundle. Open it on your computer in a current version of **Chrome or Edge**, connect your reader over USB and choose its root folder using **Select reader drive**. No BAT file or additional application is required. The supplied Qt6 package is downloaded and verified automatically; device and book data are not uploaded.

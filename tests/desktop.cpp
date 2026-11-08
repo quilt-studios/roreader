@@ -1,3 +1,4 @@
+#include "interfaces/reader/capture/screen_capture.h"
 #include "interfaces/reader/ui/controls/options.h"
 #include "interfaces/reader/ui/controls/keyboard.h"
 #include "assets/assets.h"
@@ -1387,6 +1388,41 @@ void checkHeaderFooterSizes(int preset, bool dark) {
 class DesktopTests final : public QObject {
     Q_OBJECT
 private slots:
+    void screenCaptureFromReader() {
+        Fixture fixture;
+        QVERIFY(fixture.prepared);
+        QSignalSpy opened(&fixture.window,&desktop::Window::bookOpened);
+        fixture.window.openBook(book);
+        QTRY_COMPARE_WITH_TIMEOUT(opened.count(),1,30000);
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        auto *host=fixture.window.readerWindow();
+        host->setProperty("roreader_tools_directory",fixture.directory.path()+"/tools");
+        QVERIFY(fixture.press("rrPage"));
+        QVERIFY(fixture.press("rrQuickTools"));
+        QVERIFY(fixture.press("rrToolsMods"));
+        QTRY_VERIFY(!fixture.widget("rrTools")->property("utilityBusy").toBool());
+        QVERIFY(fixture.press("rrScreenCaptureOpen"));
+        QTRY_VERIFY(fixture.visible("rrScreenCaptureDialog"));
+        QVERIFY(fixture.press("rrCaptureStart"));
+        QTRY_VERIFY(reader::screenCaptureActive(host));
+        QVERIFY(!fixture.visible("rrScreenCaptureDialog"));
+        QVERIFY(fixture.press("rrToolsClose"));
+        QTRY_VERIFY(!fixture.visible("rrTools"));
+        QVERIFY(fixture.visible("rrRecordingStop"));
+        QVERIFY(fixture.press("rrRecordingStop"));
+        QTRY_VERIFY(!reader::screenCaptureBusy(host));
+        QTRY_VERIFY(!QDir(fixture.directory.path()+"/tools/recordings").entryList({"*.avi"},QDir::Files).isEmpty());
+        QVERIFY(!host->property("roreader_capture_failed").toBool());
+        QVERIFY(reader::captureScreenshot(host,fixture.directory.path()+"/tools"));
+        QTRY_VERIFY(!reader::screenCaptureBusy(host));
+        QTRY_VERIFY(!QDir(fixture.directory.path()+"/tools/recordings").entryList({"*.png"},QDir::Files).isEmpty());
+        QVERIFY(reader::startScreenRecording(host,fixture.directory.path()+"/tools"));
+        bool handedOff=false;
+        host->prepareUsb([&] { handedOff=true; });
+        QTRY_VERIFY(handedOff);
+        QVERIFY(!reader::screenCaptureBusy(host));
+        QVERIFY(!reader::screenCaptureActive(host));
+    }
     void interfaceLanguagePersists() {
         Fixture fixture;
         QVERIFY(fixture.prepared);
@@ -6089,6 +6125,15 @@ class ScreenshotTests final : public QObject {
         QVERIFY(fixture.press("rrToolsMods"));
         QTRY_VERIFY(!fixture.widget("rrTools")->property("utilityBusy").toBool());
         QVERIFY(capture(fixture, name + "-tools-device"));
+        QVERIFY(fixture.press("rrScreenCaptureOpen"));
+        QTRY_VERIFY(fixture.visible("rrScreenCaptureDialog"));
+        QVERIFY(capture(fixture,name+"-screen-capture"));
+        QVERIFY(fixture.press("rrCaptureStart"));
+        QTRY_VERIFY(reader::screenCaptureActive(fixture.window.readerWindow()));
+        QVERIFY(capture(fixture,name+"-screen-recording"));
+        QVERIFY(fixture.press("rrRecordingStop"));
+        QTRY_VERIFY(!reader::screenCaptureBusy(fixture.window.readerWindow()));
+        QTRY_VERIFY(!fixture.visible("rrRecordingStop"));
         QVERIFY(fixture.press("rrToolsGames"));
         QVERIFY(capture(fixture, name + "-tools-tic-tac-toe"));
         QVERIFY(fixture.press("rrGameSudoku"));
@@ -7269,7 +7314,7 @@ int main(int argc, char **argv) {
     // full gallery's manifest tells which cases capture them.
     const auto selectedScenes = qEnvironmentVariable("KOBALT_GALLERY_SCENE").split(',', Qt::SkipEmptyParts);
     QMap<QString, QStringList> selection;
-    int expectedScreenshots = lightGallery ? 156 : 1335;
+    int expectedScreenshots = lightGallery ? 168 : 1347;
     if (screenshots) {
         if ((arguments.size() != 3 && !lightGallery) || !QDir::isAbsolutePath(arguments.at(2))) {
             qCritical() << "Usage: kobalt-desktop-tests --screenshots ABSOLUTE_DIRECTORY [--light]";

@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Термінал · Скетчпад · Текстовий редактор",
     "Sprache": "Мова",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "мова активна після прийняття та повторного відкриття книги.",
-    "Automatisch (Gerätesprache)": "Автоматично (мова пристрою)"
+    "Automatisch (Gerätesprache)": "Автоматично (мова пристрою)",
+    "Aufnahmeordner nicht verfügbar.": "Папка для запису недоступна.",
+    "Aufnahmedatei existiert bereits.": "файл запису вже існує.",
+    "Aufnahme konnte nicht gespeichert werden.": "Не вдалося зберегти запис.",
+    "JPEG-Encoder nicht verfügbar.": "кодувальник JPEG недоступний.",
+    "Keine Videobilder aufgenommen.": "Немає записаних відеозображень.",
+    "Bildschirmaufnahme": "знімок екрана",
+    "Screenshot speichern": "зберегти знімок екрана",
+    "Video stoppen": "Зупинити відео",
+    "Video starten": "Почати відео",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "знімок екрана у форматі PNG або відео у форматі AVI перегляду ROREADER. Відео: 2 кадри/с, до 30 секунд і 16 МіБ. Без запису звуку.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Розташування: ROREADER/записи. У записі можуть з’явитися видиме меню та перемикач зупинки."
   },
   "web": {
     "ROREADER installieren": "Встановіть ROREADER",

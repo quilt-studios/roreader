@@ -1103,7 +1103,18 @@
     "Terminal · Sketchpad · Texteditor": "Terminal · Buku Sketsa · Editor teks",
     "Sprache": "Bahasa",
     "Sprache nach Übernehmen und erneutem Öffnen des Buchs aktiv.": "Bahasa aktif setelah menerima dan membuka kembali buku.",
-    "Automatisch (Gerätesprache)": "Otomatis (bahasa perangkat)"
+    "Automatisch (Gerätesprache)": "Otomatis (bahasa perangkat)",
+    "Aufnahmeordner nicht verfügbar.": "Folder rekaman tidak tersedia.",
+    "Aufnahmedatei existiert bereits.": "File rekaman sudah ada.",
+    "Aufnahme konnte nicht gespeichert werden.": "Rekaman tidak dapat disimpan.",
+    "JPEG-Encoder nicht verfügbar.": "Pembuat enkode JPEG tidak tersedia.",
+    "Keine Videobilder aufgenommen.": "Tidak ada gambar video yang direkam.",
+    "Bildschirmaufnahme": "Tangkapan layar",
+    "Screenshot speichern": "Simpan tangkapan layar",
+    "Video stoppen": "Hentikan video",
+    "Video starten": "Mulai videonya",
+    "PNG-Screenshot oder AVI-Video der ROREADER-Ansicht. Video: 2 Bilder/s, bis zu 30 Sekunden und 16 MiB. Keine Tonaufnahme.": "Tangkapan layar PNG atau video AVI dari tampilan ROREADER. Video: 2 frame/dtk, hingga 30 detik dan 16 MiB. Tidak ada rekaman suara.",
+    "Speicherort: ROREADER/recordings. Das sichtbare Menü und der Stopp-Schalter können in der Aufnahme erscheinen.": "Lokasi: ROREADER/rekaman. Menu yang terlihat dan tombol stop dapat muncul di rekaman."
   },
   "web": {
     "ROREADER installieren": "Instal ROREADER",

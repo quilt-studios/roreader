@@ -42,6 +42,8 @@ inline QString screenshotTitle(const QString &scene, const QJsonObject &book) {
     }
     static const QMap<QString, QString> titles{
         {"about", "About ROREADER"},
+        {"screen-capture", "Screenshots and video"},
+        {"screen-recording", "Recording with stop control"},
         {"interface-language", "Interface language"},
         {"tools-entry", "Open ROREADER tools"},
         {"tools-terminal", "Terminal"},
