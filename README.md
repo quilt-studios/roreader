@@ -40,7 +40,7 @@ Der Workflow [ROREADER website](.github/workflows/pages.yml) veröffentlicht die
 5. Erlaube Chrome den Zugriff auf diesen Ordner. Das mitgelieferte Qt6-Paket und seine SHA-256-Prüfsumme werden automatisch geladen. Prüfe die erkannte Firmware und bestätige deine Datensicherung.
 6. Klicke **„ROREADER auf den Reader kopieren“**. Nach erfolgreicher Kopierprüfung das Laufwerk sicher auswerfen, USB trennen und die Installation auf dem Reader abwarten.
 
-Lass das Konsolenfenster währenddessen geöffnet. Es betreibt ausschließlich den lokalen Dateiserver; das Schließen beendet ihn. Dateien werden direkt über Chromes Ordnerfreigabe auf das Gerät geschrieben. Es gibt keinen Upload und keine Anmeldung. Ein bereits auf dem Gerät liegendes Update-Archiv wird nicht überschrieben.
+Lass das Konsolenfenster währenddessen geöffnet. Es betreibt ausschließlich den lokalen Dateiserver; das Schließen beendet ihn. Dateien werden direkt über Chromes Ordnerfreigabe auf das Gerät geschrieben. Es gibt keinen Upload und keine Anmeldung. Eine vorhandene ROREADER/Kobalt-Installation wird erkannt: **ROREADER aktualisieren** ersetzt die Programmdateien und bereitet das neue Gerätepaket vor. Bücher, Lesedaten, Einstellungen und eigene Dokumente bleiben erhalten. Ein bereits auf dem Gerät liegendes Update-Archiv muss zuerst am Reader abgeschlossen werden.
 
 Wenn du die BAT direkt aus dem Quellcode startest, kannst du stattdessen dein gebautes **`ROREADER-qt6.zip`** und die Prüfsumme aus **`ROREADER-qt6.zip.sha256`** auswählen. Die Weboberfläche benötigt ein echtes Gerätepaket; sie lädt keine fremde Release-Version als Ersatz.
 

@@ -1,8 +1,8 @@
 import {readZip, extract, sha256, firmwareFromVersion} from './zip.js';
 const $ = id => document.getElementById(id);
-let device, firmware, entries, verifiedHash, busy = false;
+let device, firmware, entries, verifiedHash, busy = false, installed = false;
 function message(id, text, error = false) { $(id).textContent = text; $(id).classList.toggle('error', error); }
-function update() { $('install').disabled = busy || !device || !entries || !/^[a-fA-F0-9]{64}$/.test($('checksum').value.trim()) || !$('backup').checked; }
+function update() { $('install').textContent = installed ? 'ROREADER aktualisieren' : 'ROREADER auf den Reader kopieren'; $('install').disabled = busy || !device || !entries || !/^[a-fA-F0-9]{64}$/.test($('checksum').value.trim()) || !$('backup').checked; }
 async function setPackage(buffer, label) {
   if (buffer.byteLength > 512 * 1024 * 1024) throw Error('Maximale Paketgröße: 512 MiB.');
   const parsed = readZip(buffer);
@@ -34,15 +34,22 @@ if (!window.showDirectoryPicker || !window.DecompressionStream) {
   $('device').disabled = true;
 }
 $('device').onclick = async () => {
-  device = null; update();
+  device = null; installed = false; update();
   try {
     const selected = await showDirectoryPicker({mode: 'readwrite'});
     const kobo = await selected.getDirectoryHandle('.kobo');
     const version = await (await kobo.getFileHandle('version')).getFile();
     if (version.size > 16384) throw Error('Ungültige Versionsdatei.');
     firmware = firmwareFromVersion(await version.text());
+    try {
+      const adds = await selected.getDirectoryHandle('.adds');
+      const app = await adds.getDirectoryHandle('kobalt');
+      const assets = await app.getDirectoryHandle('assets');
+      await assets.getFileHandle('manifest.json');
+      installed = true;
+    } catch (error) { if (error.name !== 'NotFoundError') throw error; }
     device = selected;
-    message('device-status', `${selected.name} · Firmware ${firmware}. Modellkompatibilität ist damit noch nicht bestätigt.`);
+    message('device-status', `${selected.name} · Firmware ${firmware}. ${installed ? 'Vorhandene ROREADER/Kobalt-Installation erkannt: Programmdateien werden ersetzt; Bücher, Lesedaten und eigene Dokumente bleiben erhalten. ' : 'Neuinstallation. '}Modellkompatibilität ist damit noch nicht bestätigt.`);
   } catch (error) { message('device-status', error.name === 'AbortError' ? 'Auswahl abgebrochen.' : error.message, true); }
   update();
 };
@@ -102,7 +109,7 @@ $('install').onclick = async () => {
       await writeFile(entry.name, await extract(entry), undo);
       progress.value = i + 1;
     }
-    message('result', 'Paket vollständig kopiert und geprüft. Jetzt sicher auswerfen, USB trennen und am Reader warten. Die erfolgreiche Geräteinstallation ist damit noch nicht geprüft.');
+    message('result', `${installed ? 'Aktualisierung bereit. ' : ''}Paket vollständig kopiert und geprüft. Jetzt sicher auswerfen, USB trennen und am Reader warten. Die erfolgreiche Geräteinstallation ist damit noch nicht geprüft.`);
   } catch (error) {
     let rollbackError = false;
     // Restore overwritten assets and remove only files created by this attempt.

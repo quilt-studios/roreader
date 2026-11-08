@@ -34,11 +34,29 @@ try {
     await page.locator('#backup').check();
   }
   await prepare();
+  assert.equal(await page.locator('#install').textContent(),'ROREADER aktualisieren');
+  await page.locator('#device-status').filter({hasText:'Installation erkannt'}).waitFor();
+  await page.evaluate(()=>{
+    for (const path of ['books/example.epub','.adds/kobalt/profile/settings.json','ROREADER/notizen.txt'])
+      window.deviceTest.files[path]=new TextEncoder().encode('keep me');
+  });
   await mkdir(root+'/build/screenshots/installer',{recursive:true});
   await page.screenshot({path:root+'/build/screenshots/installer/chrome-installer.png',fullPage:true});
   await page.locator('#install').click();
   await page.locator('#result').filter({hasText:'vollständig kopiert und geprüft'}).waitFor();
   assert.deepEqual(await page.evaluate(()=>window.deviceTest.writes),['.adds/kobalt/assets/manifest.json','.kobo/Kobo.tgz']);
+  assert.equal(await page.evaluate(()=>new TextDecoder().decode(window.deviceTest.files['.adds/kobalt/assets/manifest.json'])),'{}');
+  for (const path of ['books/example.epub','.adds/kobalt/profile/settings.json','ROREADER/notizen.txt'])
+    assert.equal(await page.evaluate(path=>new TextDecoder().decode(window.deviceTest.files[path]),path),'keep me');
+  console.log('PASS: Installed ROREADER detected and replaced; books, profile and documents preserved');
+  await page.goto(url);
+  await page.getByText('Beiliegendes ROREADER-Paket ·').waitFor();
+  await page.evaluate(()=>{delete window.deviceTest.files['.adds/kobalt/assets/manifest.json'];});
+  await page.locator('#device').click();
+  assert.equal(await page.locator('#install').textContent(),'ROREADER auf den Reader kopieren');
+  await page.locator('#backup').check();
+  await page.locator('#install').click();
+  await page.locator('#result').filter({hasText:'vollständig kopiert und geprüft'}).waitFor();
   console.log('PASS: Chrome flow selects device root, auto-verifies package, writes assets before activation');
   await prepare();
   await page.evaluate(()=>{window.deviceTest.files['.kobo/Kobo.tgz']=new TextEncoder().encode('existing update');});
