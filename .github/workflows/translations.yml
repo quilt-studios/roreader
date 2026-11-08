@@ -1,0 +1,29 @@
+name: Translations
+on:
+  pull_request:
+    paths:
+      - assets/translations/**
+      - assets/en.strings
+      - platforms/installer/**
+      - tests/localization.test.mjs
+      - .github/workflows/translations.yml
+  push:
+    branches: [main]
+    paths:
+      - assets/translations/**
+      - assets/en.strings
+      - platforms/installer/**
+      - tests/localization.test.mjs
+permissions:
+  contents: read
+jobs:
+  catalogs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node tests/localization.test.mjs
+      - run: node tests/installer.test.mjs
+      - run: node tests/installer.site.test.mjs

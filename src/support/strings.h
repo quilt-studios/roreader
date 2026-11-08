@@ -1,5 +1,6 @@
 #pragma once
 #include <QString>
+#include "localization.h"
 #include <QStringList>
 #include <QRegularExpression>
 #include <algorithm>
@@ -40,7 +41,7 @@ inline QString get(const char *key) {
         return QString::fromLatin1(key);
     const QString value = QString::fromUtf8(entry->value);
     if (!keyDisplay().load())
-        return value;
+        return i18n::lookup("reader", QString::fromLatin1(key), value);
     QString result = QString::fromLatin1(key);
     // Retain argument slots so key mode also exercises formatted messages.
     const QRegularExpression placeholders("%[1-9][0-9]?");

@@ -17,6 +17,9 @@ try {
   assert.equal((await readFile(join(output,'package.sha256'),'utf8')).trim().split(/\s+/)[0],hash);
   assert.equal(JSON.parse(await readFile(join(output,'site-manifest.json'),'utf8')).package_sha256,hash);
   assert.ok((await readFile(join(output,'index.html'),'utf8')).includes('src="logo.png"'));
+  assert.ok((await readFile(join(output,'locale.js'),'utf8')).includes('export function t'));
+  assert.equal(JSON.parse(await readFile(join(output,'locales/languages.json'),'utf8')).ku,'Kurmancî');
+  assert.ok(JSON.parse(await readFile(join(output,'locales/ku.json'),'utf8')).web['Sprache']);
   result=build();assert.equal(result.status,0,result.stderr);
   await writeFile(file+'.sha256','0'.repeat(64));result=build();assert.notEqual(result.status,0);assert.match(result.stderr,/checksum/);
   assert.equal((await readFile(join(output,'package.zip'))).compare(archive),0);

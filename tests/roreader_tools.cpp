@@ -3,6 +3,7 @@
 #include "interfaces/reader/tools/game_models.h"
 #include "interfaces/reader/ui/style/scale.h"
 #include <QApplication>
+#include "support/strings.h"
 #include <QDir>
 #include <QFile>
 #include <QImage>
@@ -36,6 +37,7 @@ class ToolsTests final : public QObject {
     }
   private slots:
     void init() {
+        i18n::setLanguage("de");
         QVERIFY(temporary.isValid());
         host.resize(800, 1136);
         host.show();
@@ -43,9 +45,38 @@ class ToolsTests final : public QObject {
         QVERIFY(tools->isVisible());
     }
     void cleanup() {
+        i18n::setLanguage("en");
         delete tools;
         tools = nullptr;
         QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+    }
+    void localizedTools_data() {
+        QTest::addColumn<QString>("code");
+        const auto languages = i18n::languages();
+        QVERIFY(!languages.isEmpty());
+        for (auto it = languages.begin(); it != languages.end(); ++it)
+            QTest::newRow(qPrintable(it.key())) << it.key();
+    }
+    void localizedTools() {
+        QFETCH(QString, code);
+        delete tools;
+        i18n::setLanguage(code);
+        tools = reader::openTools(&host, {}, temporary.path());
+        const auto catalog = i18n::resource(code);
+        QVERIFY(!catalog.isEmpty());
+        QCOMPARE(tools->findChild<QPushButton *>("rrToolsEditor")->text(),
+                 catalog.value("tools").toObject().value("Texteditor").toString());
+        QCOMPARE(strings::get("reader.exit"),catalog.value("reader").toObject().value("reader.exit").toString());
+        const auto formatted = i18n::text("%1 Dateien · %2").arg(7).arg("ROREADER");
+        QVERIFY(formatted.contains("7") && formatted.contains("ROREADER"));
+        const auto destination = qEnvironmentVariable("ROREADER_CAPTURE_DIR");
+        if (!destination.isEmpty() && QStringList{"ku","uk","fr"}.contains(code)) {
+            QVERIFY(QDir().mkpath(destination));
+            QVERIFY(tools->grab().save(destination + "/tools-" + code + ".png"));
+        }
+        i18n::setLanguage("not-a-language");
+        QCOMPARE(i18n::language(),QStringLiteral("en"));
+        QCOMPARE(i18n::text("Unknown future text"),QStringLiteral("Unknown future text"));
     }
     void shellRunsAndCancelsWithoutBlocking() {
         auto *command = tools->findChild<QLineEdit *>("rrTerminalCommand");

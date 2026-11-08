@@ -139,8 +139,9 @@ target_link_options(kobalt PRIVATE -Wl,--no-undefined
 
 set(resources "${KOBALT_ROOT}/assets")
 file(GLOB notices CONFIGURE_DEPENDS "${resources}/notices/*")
+file(GLOB translations CONFIGURE_DEPENDS "${resources}/translations/*.json")
 set(qrc "<RCC><qresource prefix=\"/kobalt\">")
-foreach(path "${resources}/acknowledgments.json" ${notices}
+foreach(path "${resources}/acknowledgments.json" ${notices} ${translations}
         "${resources}/samples/words-and-letters.html" "${resources}/samples/layout.html" "${resources}/roreader-icon.png")
     file(RELATIVE_PATH alias "${resources}" "${path}")
     string(APPEND qrc "<file alias=\"${alias}\">${path}</file>")

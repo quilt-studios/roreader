@@ -9,6 +9,7 @@
 #include "assets/font_catalog.h"
 #include "reading/style_sample.h"
 #include <QHash>
+#include <QComboBox>
 #include <QStackedWidget>
 #include <QVector>
 #include <QPointer>
@@ -81,6 +82,7 @@ public:
     ui::DescribedOption *hideTabLabelsOption = nullptr;
     QStackedWidget *settingsPages = nullptr;
     QVector<QPushButton *> settingsTabButtons;
+    QComboBox *languageOption = nullptr;
     ui::DescribedOption *darkOption = nullptr, *inheritTextLayoutOption = nullptr, *animationOption = nullptr;
     ui::DescribedOption *edgeLightOption = nullptr, *denseGraphOption = nullptr;
     ui::DescribedOption *linkIndicatorOption = nullptr, *hideNonlinearOption = nullptr,

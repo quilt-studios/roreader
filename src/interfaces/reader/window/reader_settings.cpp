@@ -279,6 +279,7 @@ void Reader::openSettings() {
     hideNonlinearOption->setChecked(model->state().value("hide_nonlinear_fragments").toBool(false));
     avoidWastefulStylingOption->setChecked(model->state().value("avoid_wasteful_styling").toBool(true));
     auto *displaySettings = static_cast<SettingsPanel *>(general);
+    displaySettings->languageOption->setCurrentIndex(qMax(0, displaySettings->languageOption->findData(preferences.value("ui_language").toString())));
     settingsVerticalSpacing = appearance::verticalSpacingMode(model->state().value("vertical_justification"));
     settingsVerticalSpacingScope = appearance::verticalSpacingScope(model->state().value("vertical_spacing_scope"));
     displaySettings->landscapeColumnsOption->setChecked(preferences.value("two_columns_landscape").toBool(false));
@@ -512,6 +513,7 @@ void Reader::applySettings() {
         return;
     }
     auto next = preferences;
+    next["ui_language"] = static_cast<SettingsPanel *>(general)->languageOption->currentData().toString();
     next["default_font_face"] = settingsDefaultFontFace;
     next["ui_font_face"] = settingsUiFontFace;
     next["ui_mono_font_face"] = settingsUiMonoFontFace;

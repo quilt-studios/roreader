@@ -6,6 +6,7 @@ on:
     paths:
       - platforms/installer/**
       - assets/roreader-icon.png
+      - assets/translations/**
       - ziprelease/**
       - .github/workflows/pages.yml
   workflow_dispatch:
@@ -30,6 +31,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Verify translation catalogs
+        run: node tests/localization.test.mjs
       - name: Verify and extract bundled device package
         run: |
           cd ziprelease

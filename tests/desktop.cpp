@@ -63,6 +63,8 @@
 #include <QCheckBox>
 #include <QBuffer>
 #include <QComboBox>
+#include <QAbstractItemView>
+#include <QGraphicsProxyWidget>
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QDir>
@@ -1385,6 +1387,51 @@ void checkHeaderFooterSizes(int preset, bool dark) {
 class DesktopTests final : public QObject {
     Q_OBJECT
 private slots:
+    void interfaceLanguagePersists() {
+        Fixture fixture;
+        QVERIFY(fixture.prepared);
+        QSignalSpy opened(&fixture.window, &desktop::Window::bookOpened);
+        fixture.window.openBook(book);
+        QTRY_COMPARE_WITH_TIMEOUT(opened.count(),1,30000);
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        QVERIFY(fixture.press("rrPage"));
+        QVERIFY(fixture.press("rrSettings"));
+        QVERIFY(fixture.press("rrSettingsSystem"));
+        QVERIFY(revealSettingsOption(fixture,"rrInterfaceLanguage"));
+        auto *selector = qobject_cast<QComboBox *>(fixture.widget("rrInterfaceLanguage"));
+        QVERIFY(selector);
+        QVERIFY(selector->findData("ku")>=0);
+        QVERIFY(fixture.press("rrInterfaceLanguage"));
+        QTRY_VERIFY(selector->view()->isVisible());
+        const auto target = selector->model()->index(selector->findData("ku"),0);
+        selector->view()->scrollTo(target);
+        auto *popup = selector->view()->window();
+        auto *popupProxy = popup->graphicsProxyWidget();
+        QVERIFY(popupProxy);
+        auto *canvas = fixture.window.findChild<QGraphicsView *>();
+        const auto point = popupProxy->mapToScene(selector->view()->viewport()->mapTo(
+            popup,selector->view()->visualRect(target).center()));
+        QTest::mouseClick(canvas->viewport(),Qt::LeftButton,Qt::NoModifier,canvas->mapFromScene(point));
+        QCOMPARE(selector->currentData().toString(),QStringLiteral("ku"));
+        QTRY_VERIFY(!selector->view()->isVisible());
+        QVERIFY(fixture.press("rrSettingsClose"));
+
+        QTRY_VERIFY(!fixture.visible("rrGeneralSettings"));
+        QTRY_COMPARE(storage::readJson(fixture.paths.preferences()).value("ui_language").toString(),QStringLiteral("ku"));
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        if (!fixture.visible("rrReturn")) QVERIFY(fixture.press("rrPage"));
+        QVERIFY(fixture.press("rrReturn"));
+        QTRY_VERIFY(fixture.window.idle());
+        fixture.window.openBook(book);
+        QTRY_COMPARE_WITH_TIMEOUT(opened.count(),2,30000);
+        QTRY_VERIFY(!fixture.state().value("busy").toBool());
+        QCOMPARE(i18n::language(),QStringLiteral("ku"));
+        QVERIFY(fixture.press("rrPage"));
+        QVERIFY(fixture.press("rrQuickTools"));
+        QTRY_VERIFY(fixture.visible("rrTools"));
+        QCOMPARE(qobject_cast<QPushButton *>(fixture.widget("rrToolsEditor"))->text(),i18n::text("Texteditor"));
+        i18n::setLanguage("en");
+    }
     void quickToolsAccess() {
         Fixture fixture;
         QVERIFY(fixture.prepared);
@@ -6008,6 +6055,8 @@ class ScreenshotTests final : public QObject {
     Q_OBJECT
     void captureTools(Fixture &fixture, const QString &name) {
         QVERIFY(fixture.press("rrSettingsSystem"));
+        QVERIFY(revealSettingsOption(fixture, "rrInterfaceLanguage"));
+        QVERIFY(capture(fixture, name + "-interface-language"));
         QVERIFY(revealSettingsOption(fixture, "rrOpenTools"));
         QVERIFY(capture(fixture, name + "-tools-entry"));
         fixture.window.readerWindow()->setProperty("roreader_tools_directory", fixture.directory.path() + "/tools");
@@ -7220,7 +7269,7 @@ int main(int argc, char **argv) {
     // full gallery's manifest tells which cases capture them.
     const auto selectedScenes = qEnvironmentVariable("KOBALT_GALLERY_SCENE").split(',', Qt::SkipEmptyParts);
     QMap<QString, QStringList> selection;
-    int expectedScreenshots = lightGallery ? 150 : 1328;
+    int expectedScreenshots = lightGallery ? 156 : 1335;
     if (screenshots) {
         if ((arguments.size() != 3 && !lightGallery) || !QDir::isAbsolutePath(arguments.at(2))) {
             qCritical() << "Usage: kobalt-desktop-tests --screenshots ABSOLUTE_DIRECTORY [--light]";

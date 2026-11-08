@@ -1,3 +1,4 @@
+#include "support/localization.h"
 #include "tools_panel.h"
 #include "sketch_canvas.h"
 #include "games_panel.h"
@@ -121,9 +122,9 @@ class Tools final : public QWidget {
         if (inputDialog)
             return;
         keyboard.reset();
-        auto *dialog = new ui::ChoiceModal(this, {{}, QStringLiteral("Text eingeben"), {}},
-                                           {QStringLiteral("Abbrechen"), "rrToolsInputCancel"},
-                                           {QStringLiteral("Übernehmen"), "rrToolsInputApply"});
+        auto *dialog = new ui::ChoiceModal(this, {{}, i18n::text(QStringLiteral("Text eingeben")), {}},
+                                           {i18n::text(QStringLiteral("Abbrechen")), "rrToolsInputCancel"},
+                                           {i18n::text(QStringLiteral("Übernehmen")), "rrToolsInputApply"});
         inputDialog = dialog;
         dialog->setObjectName("rrToolsInputDialog");
         dialog->setGeometry(rect());
@@ -184,7 +185,7 @@ class Tools final : public QWidget {
             return;
         pending = true;
         setProperty("utilityBusy", true);
-        status->setText(QStringLiteral("Datei wird verarbeitet …"));
+        status->setText(i18n::text(QStringLiteral("Datei wird verarbeitet …")));
         auto *task = new FileJob;
         task->operation = std::move(operation);
         connect(task, &QThread::finished, this, [this, task, done] {
@@ -200,7 +201,7 @@ class Tools final : public QWidget {
         const auto value = filename->text().trimmed();
         if (value.isEmpty() || value.size() > 128 || value == "." || value == ".." || value.contains('/') ||
             value.contains('\\') || value.contains(QChar(0))) {
-            status->setText(QStringLiteral("Bitte einen einfachen Dateinamen ohne Ordner angeben."));
+            status->setText(i18n::text(QStringLiteral("Bitte einen einfachen Dateinamen ohne Ordner angeben.")));
             return {};
         }
         return value;
@@ -209,7 +210,7 @@ class Tools final : public QWidget {
         if (pending)
             return;
         if (editor->document()->isModified()) {
-            status->setText(QStringLiteral("Bitte zuerst speichern oder den Text leeren."));
+            status->setText(i18n::text(QStringLiteral("Bitte zuerst speichern oder den Text leeren.")));
             return;
         }
         const auto file = name();
@@ -221,23 +222,24 @@ class Tools final : public QWidget {
             [root, file](FileJob &task) {
                 QFile input(root + '/' + file);
                 if (QFileInfo(input).isSymLink() || !input.open(QIODevice::ReadOnly)) {
-                    task.error = QStringLiteral("Datei kann nicht geöffnet werden.");
+                    task.error = i18n::text(QStringLiteral("Datei kann nicht geöffnet werden."));
                     return;
                 }
                 if (input.size() > textLimit) {
-                    task.error = QStringLiteral("Maximale Textgröße: 1 MiB.");
+                    task.error = i18n::text(QStringLiteral("Maximale Textgröße: 1 MiB."));
                     return;
                 }
                 task.bytes = input.readAll();
                 const auto text = task.bytes.startsWith("\xef\xbb\xbf") ? task.bytes.mid(3) : task.bytes;
                 if (input.error() != QFile::NoError || text.contains('\0') || QString::fromUtf8(text).toUtf8() != text)
-                    task.error = QStringLiteral("Nur gültige UTF-8-Textdateien werden unterstützt.");
+                    task.error = i18n::text(QStringLiteral("Nur gültige UTF-8-Textdateien werden unterstützt."));
             },
             [this, file, revision](const FileJob &task) {
                 if (!task.error.isEmpty())
                     return;
                 if (editor->document()->revision() != revision) {
-                    status->setText(QStringLiteral("Der Text wurde inzwischen bearbeitet. Öffnen wurde abgebrochen."));
+                    status->setText(
+                        i18n::text(QStringLiteral("Der Text wurde inzwischen bearbeitet. Öffnen wurde abgebrochen.")));
                     return;
                 }
                 loadedBom = task.bytes.startsWith("\xef\xbb\xbf");
@@ -255,7 +257,7 @@ class Tools final : public QWidget {
         if (file.isEmpty())
             return;
         if (bytes.size() > textLimit) {
-            status->setText(QStringLiteral("Maximale Textgröße: 1 MiB."));
+            status->setText(i18n::text(QStringLiteral("Maximale Textgröße: 1 MiB.")));
             return;
         }
         const auto root = directory;
@@ -263,26 +265,26 @@ class Tools final : public QWidget {
         job(
             [root, file, bytes, expected](FileJob &task) {
                 if (QFileInfo(root).isSymLink() || !QDir().mkpath(root)) {
-                    task.error = QStringLiteral("Speicherordner nicht verfügbar.");
+                    task.error = i18n::text(QStringLiteral("Speicherordner nicht verfügbar."));
                     return;
                 }
                 const auto path = root + '/' + file;
                 if (QFileInfo(path).isSymLink()) {
-                    task.error = QStringLiteral("Symbolische Links werden nicht überschrieben.");
+                    task.error = i18n::text(QStringLiteral("Symbolische Links werden nicht überschrieben."));
                     return;
                 }
                 if (QFileInfo::exists(path)) {
                     QFile old(path);
                     if (expected.isEmpty() || !old.open(QIODevice::ReadOnly) || old.size() > textLimit ||
                         QCryptographicHash::hash(old.readAll(), QCryptographicHash::Sha256) != expected) {
-                        task.error = QStringLiteral(
-                            "Datei existiert bereits oder wurde geändert. Bitte einen neuen Namen wählen.");
+                        task.error = i18n::text(QStringLiteral(
+                            "Datei existiert bereits oder wurde geändert. Bitte einen neuen Namen wählen."));
                         return;
                     }
                 }
                 QSaveFile output(path);
                 if (!output.open(QIODevice::WriteOnly) || output.write(bytes) != bytes.size() || !output.commit()) {
-                    task.error = QStringLiteral("Speichern fehlgeschlagen. Originaldatei bleibt erhalten.");
+                    task.error = i18n::text(QStringLiteral("Speichern fehlgeschlagen. Originaldatei bleibt erhalten."));
                     return;
                 }
                 task.bytes = bytes;
@@ -295,7 +297,7 @@ class Tools final : public QWidget {
                 loadedHash = QCryptographicHash::hash(bytes, QCryptographicHash::Sha256);
                 if (editor->toPlainText().toUtf8() == body)
                     editor->document()->setModified(false);
-                status->setText(QStringLiteral("Gespeichert: ") + directory + '/' + file);
+                status->setText(i18n::text(QStringLiteral("Gespeichert: ")) + directory + '/' + file);
             });
     }
     void saveSketch() {
@@ -306,23 +308,23 @@ class Tools final : public QWidget {
         job(
             [root, file, image](FileJob &task) {
                 if (QFileInfo(root).isSymLink() || !QDir().mkpath(root)) {
-                    task.error = QStringLiteral("Speicherordner nicht verfügbar.");
+                    task.error = i18n::text(QStringLiteral("Speicherordner nicht verfügbar."));
                     return;
                 }
                 const auto path = root + '/' + file;
                 if (QFileInfo::exists(path)) {
-                    task.error = QStringLiteral("Datei existiert bereits. Bitte erneut speichern.");
+                    task.error = i18n::text(QStringLiteral("Datei existiert bereits. Bitte erneut speichern."));
                     return;
                 }
                 QSaveFile output(path);
                 if (!output.open(QIODevice::WriteOnly) || !image.save(&output, "PNG") || !output.commit())
-                    task.error = QStringLiteral("Zeichnung konnte nicht gespeichert werden.");
+                    task.error = i18n::text(QStringLiteral("Zeichnung konnte nicht gespeichert werden."));
             },
             [this, image, file](const FileJob &task) {
                 if (task.error.isEmpty()) {
                     if (sketch->image == image)
                         sketch->dirty = false;
-                    status->setText(QStringLiteral("Gespeichert: ") + directory + '/' + file);
+                    status->setText(i18n::text(QStringLiteral("Gespeichert: ")) + directory + '/' + file);
                 }
             });
     }
@@ -347,8 +349,9 @@ class Tools final : public QWidget {
     void confirm(const QString &title, std::function<void()> action) {
         if (confirmation)
             return;
-        auto *dialog = new ui::ChoiceModal(this, {{}, title, {}}, {QStringLiteral("Abbrechen"), "rrToolsCancel"},
-                                           {QStringLiteral("Bestätigen"), "rrToolsConfirm"});
+        auto *dialog =
+            new ui::ChoiceModal(this, {{}, title, {}}, {i18n::text(QStringLiteral("Abbrechen")), "rrToolsCancel"},
+                                {i18n::text(QStringLiteral("Bestätigen")), "rrToolsConfirm"});
         confirmation = dialog;
         connect(dialog->secondaryButton(), &QPushButton::clicked, dialog, &QObject::deleteLater);
         connect(dialog->primaryButton(), &QPushButton::clicked, this, [dialog, action] {
@@ -368,16 +371,16 @@ class Tools final : public QWidget {
         job(
             [root, file, bytes](FileJob &task) {
                 if (QFileInfo(root).isSymLink() || !QDir().mkpath(root) || QFileInfo::exists(root + '/' + file)) {
-                    task.error = "Exportordner nicht verfügbar";
+                    task.error = i18n::text("Exportordner nicht verfügbar");
                     return;
                 }
                 QSaveFile output(root + '/' + file);
                 if (!output.open(QIODevice::WriteOnly) || output.write(bytes) != bytes.size() || !output.commit())
-                    task.error = "Export fehlgeschlagen";
+                    task.error = i18n::text("Export fehlgeschlagen");
             },
             [this, file](const FileJob &task) {
                 if (task.error.isEmpty())
-                    status->setText("Gespeichert: " + directory + '/' + file);
+                    status->setText(i18n::text("Gespeichert: ") + directory + '/' + file);
             });
     }
     void refreshFiles() {
@@ -387,12 +390,12 @@ class Tools final : public QWidget {
         job(
             [root](FileJob &task) {
                 if (QFileInfo(root).isSymLink()) {
-                    task.error = "Verlinkte Speicherordner werden nicht geöffnet";
+                    task.error = i18n::text("Verlinkte Speicherordner werden nicht geöffnet");
                     return;
                 }
                 const auto entries = QDir(root).entryInfoList(QDir::Files | QDir::NoSymLinks, QDir::Name);
                 if (entries.size() > 2000) {
-                    task.error = "Zu viele Dateien im Ordner";
+                    task.error = i18n::text("Zu viele Dateien im Ordner");
                     return;
                 }
                 for (const auto &entry : entries)
@@ -411,8 +414,9 @@ class Tools final : public QWidget {
                                                     QString::number(row["size"].toDouble() / 1024.0, 'f', 1) + " KiB"});
                     item->setData(0, Qt::UserRole, row);
                 }
-                status->setText(task.rows.isEmpty() ? "Noch keine Dateien · " + directory
-                                                    : QString("%1 Dateien · %2").arg(task.rows.size()).arg(directory));
+                status->setText(task.rows.isEmpty()
+                                    ? i18n::text("Noch keine Dateien · ") + directory
+                                    : QString(i18n::text("%1 Dateien · %2")).arg(task.rows.size()).arg(directory));
             });
     }
     QJsonObject selectedFile() const {
@@ -430,18 +434,18 @@ class Tools final : public QWidget {
                     [root, file](FileJob &task) {
                         const auto path = root + '/' + file;
                         if (QFileInfo(path).isSymLink() || QFileInfo(path).size() > 8 * 1024 * 1024) {
-                            task.error = "Bild ist zu groß oder verlinkt";
+                            task.error = i18n::text("Bild ist zu groß oder verlinkt");
                             return;
                         }
                         QImageReader reader(path, "PNG");
                         const auto size = reader.size();
                         if (!size.isValid() || size.width() > 2260 || size.height() > 2260) {
-                            task.error = "Bildabmessungen nicht unterstützt";
+                            task.error = i18n::text("Bildabmessungen nicht unterstützt");
                             return;
                         }
                         task.picture = reader.read();
                         if (task.picture.isNull())
-                            task.error = "PNG kann nicht gelesen werden";
+                            task.error = i18n::text("PNG kann nicht gelesen werden");
                     },
                     [this](const FileJob &task) {
                         if (task.error.isEmpty()) {
@@ -457,7 +461,7 @@ class Tools final : public QWidget {
                 load();
         } else {
             if (editor->document()->isModified()) {
-                status->setText("Text zuerst speichern oder Neu wählen");
+                status->setText(i18n::text("Text zuerst speichern oder Neu wählen"));
                 return;
             }
             filename->setText(file);
@@ -473,11 +477,11 @@ class Tools final : public QWidget {
         const auto file = selected["name"].toString();
         const auto target = renameInput->text().trimmed();
         if (!simpleName(file)) {
-            status->setText("Bitte eine Datei auswählen");
+            status->setText(i18n::text("Bitte eine Datei auswählen"));
             return;
         }
         if (!remove && !simpleName(target)) {
-            status->setText("Bitte einen einfachen neuen Dateinamen angeben");
+            status->setText(i18n::text("Bitte einen einfachen neuen Dateinamen angeben"));
             return;
         }
         const auto root = directory;
@@ -488,15 +492,15 @@ class Tools final : public QWidget {
                     if (QFileInfo(root).isSymLink() || source.isSymLink() || !source.isFile() ||
                         source.size() != qint64(selected["size"].toDouble()) ||
                         source.lastModified().toMSecsSinceEpoch() != qint64(selected["modified"].toDouble())) {
-                        task.error = "Datei wurde verändert. Liste neu laden.";
+                        task.error = i18n::text("Datei wurde verändert. Liste neu laden.");
                         return;
                     }
                     if (remove) {
                         if (!QFile::remove(source.filePath()))
-                            task.error = "Löschen fehlgeschlagen";
+                            task.error = i18n::text("Löschen fehlgeschlagen");
                     } else if (QFileInfo::exists(root + '/' + target) ||
                                !QFile::rename(source.filePath(), root + '/' + target))
-                        task.error = "Zieldatei existiert oder Umbenennen fehlgeschlagen";
+                        task.error = i18n::text("Zieldatei existiert oder Umbenennen fehlgeschlagen");
                 },
                 [this](const FileJob &task) {
                     if (task.error.isEmpty())
@@ -504,7 +508,7 @@ class Tools final : public QWidget {
                 });
         };
         if (remove)
-            confirm("Datei wirklich löschen?\n" + file, change);
+            confirm(i18n::text("Datei wirklich löschen?\n") + file, change);
         else
             change();
     }
@@ -518,7 +522,7 @@ class Tools final : public QWidget {
                 QFile input(root + '/' + file);
                 if (QFileInfo(root).isSymLink() || QFileInfo(input).isSymLink() || !input.open(QIODevice::ReadOnly) ||
                     input.size() > 64 * 1024 * 1024) {
-                    task.error = "Datei kann nicht geprüft werden";
+                    task.error = i18n::text("Datei kann nicht geprüft werden");
                     return;
                 }
                 QCryptographicHash hash(QCryptographicHash::Sha256);
@@ -546,7 +550,7 @@ class Tools final : public QWidget {
                 while (!QFileInfo::exists(existing) && existing != "/")
                     existing = QFileInfo(existing).absolutePath();
                 const QStorageInfo storage(existing);
-                QString firmware = "Nicht auf einem Kobo/tolino erkannt";
+                QString firmware = i18n::text("Nicht auf einem Kobo/tolino erkannt");
                 QFile version("/mnt/onboard/.kobo/version");
                 if (version.open(QIODevice::ReadOnly)) {
                     const auto text = QString::fromUtf8(version.read(16384));
@@ -554,7 +558,7 @@ class Tools final : public QWidget {
                     if (match.hasMatch())
                         firmware = match.captured(1);
                 }
-                QString battery = "Nicht verfügbar";
+                QString battery = i18n::text("Nicht verfügbar");
                 for (const auto &supply :
                      QDir("/sys/class/power_supply").entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
                     QFile capacity("/sys/class/power_supply/" + supply + "/capacity");
@@ -568,10 +572,12 @@ class Tools final : public QWidget {
                     }
                 }
                 task.report =
-                    QString(
-                        "ROREADER · Geräteinformationen\n\nSystem: %1\nKernel: %2\nArchitektur: %3\nQt: %4\nFirmware: "
-                        "%5\nAkku: %6\nFreier Speicher: %7 MiB\nGesamtspeicher: %8 MiB\nDokumente: %9\n\nSicherungen "
-                        "enthalten nur Dateien aus dem ROREADER-Dokumentordner, keine Lesedatenbank oder Firmware.")
+                    QString(i18n::text("ROREADER · Geräteinformationen\n\nSystem: %1\nKernel: %2\nArchitektur: %3\nQt: "
+                                       "%4\nFirmware: "
+                                       "%5\nAkku: %6\nFreier Speicher: %7 MiB\nGesamtspeicher: %8 MiB\nDokumente: "
+                                       "%9\n\nSicherungen "
+                                       "enthalten nur Dateien aus dem ROREADER-Dokumentordner, keine Lesedatenbank "
+                                       "oder Firmware."))
                         .arg(QSysInfo::prettyProductName(), QSysInfo::kernelVersion(),
                              QSysInfo::currentCpuArchitecture(), QString::fromLatin1(qVersion()), firmware, battery)
                         .arg(storage.bytesAvailable() / 1024 / 1024)
@@ -593,7 +599,7 @@ class Tools final : public QWidget {
         job(
             [root, folder](FileJob &task) {
                 if (QFileInfo(root).isSymLink()) {
-                    task.error = "Verlinkter Dokumentordner";
+                    task.error = i18n::text("Verlinkter Dokumentordner");
                     return;
                 }
                 const auto entries = QDir(root).entryInfoList(QDir::Files | QDir::NoSymLinks, QDir::Name);
@@ -601,12 +607,12 @@ class Tools final : public QWidget {
                 for (const auto &entry : entries)
                     total += entry.size();
                 if (entries.size() > 200 || total > 64 * 1024 * 1024) {
-                    task.error = "Sicherungslimit: 200 Dateien oder 64 MiB";
+                    task.error = i18n::text("Sicherungslimit: 200 Dateien oder 64 MiB");
                     return;
                 }
                 const auto target = root + '/' + folder;
                 if (QFileInfo::exists(target) || !QDir().mkpath(target)) {
-                    task.error = "Sicherungsordner kann nicht erstellt werden";
+                    task.error = i18n::text("Sicherungsordner kann nicht erstellt werden");
                     return;
                 }
                 QJsonArray manifest;
@@ -614,18 +620,18 @@ class Tools final : public QWidget {
                 for (const auto &entry : entries) {
                     QFile input(entry.filePath());
                     if (!input.open(QIODevice::ReadOnly)) {
-                        task.error = "Sicherung unvollständig: Lesefehler";
+                        task.error = i18n::text("Sicherung unvollständig: Lesefehler");
                         return;
                     }
                     const auto bytes = input.read(64 * 1024 * 1024 + 1);
                     copiedBytes += bytes.size();
                     if (copiedBytes > 64 * 1024 * 1024 || input.error() != QFile::NoError) {
-                        task.error = "Sicherung unvollständig: Datei zu groß oder Lesefehler";
+                        task.error = i18n::text("Sicherung unvollständig: Datei zu groß oder Lesefehler");
                         return;
                     }
                     QSaveFile output(target + '/' + entry.fileName());
                     if (!output.open(QIODevice::WriteOnly) || output.write(bytes) != bytes.size() || !output.commit()) {
-                        task.error = "Sicherung unvollständig: Schreibfehler";
+                        task.error = i18n::text("Sicherung unvollständig: Schreibfehler");
                         return;
                     }
                     manifest.append(QJsonObject{
@@ -636,10 +642,10 @@ class Tools final : public QWidget {
                 const auto bytes = QJsonDocument(manifest).toJson();
                 QSaveFile summary(target + "/backup-manifest.json");
                 if (!summary.open(QIODevice::WriteOnly) || summary.write(bytes) != bytes.size() || !summary.commit()) {
-                    task.error = "Sicherungsmanifest fehlt";
+                    task.error = i18n::text("Sicherungsmanifest fehlt");
                     return;
                 }
-                task.report = "Sicherung abgeschlossen: " + target;
+                task.report = i18n::text("Sicherung abgeschlossen: ") + target;
             },
             [this](const FileJob &task) {
                 if (task.error.isEmpty())
@@ -657,13 +663,13 @@ class Tools final : public QWidget {
         auto *page = new QWidget(pages);
         pages->addWidget(page);
         auto *rows = new QVBoxLayout(page);
-        auto *description = new ui::InterfaceLabel("Deine Texte, Zeichnungen und Exporte", page);
+        auto *description = new ui::InterfaceLabel(i18n::text("Deine Texte, Zeichnungen und Exporte"), page);
         description->setWordWrap(true);
         rows->addWidget(description);
         files = new QTreeWidget(page);
         files->setObjectName("rrFileList");
         files->setColumnCount(2);
-        files->setHeaderLabels({"Datei", "Größe"});
+        files->setHeaderLabels({i18n::text("Datei"), i18n::text("Größe")});
         files->setRootIsDecorated(false);
         files->setColumnWidth(0, ui::px(440));
         rows->addWidget(files, 1);
@@ -674,21 +680,21 @@ class Tools final : public QWidget {
         connect(files, &QTreeWidget::itemDoubleClicked, this, [this](QTreeWidgetItem *, int) { openSelected(); });
         auto *actions = new QHBoxLayout;
         rows->addLayout(actions);
-        button(page, actions, "rrFilesRefresh", "Neu laden", [this] { refreshFiles(); });
-        button(page, actions, "rrFilesOpen", "Öffnen", [this] { openSelected(); });
+        button(page, actions, "rrFilesRefresh", i18n::text("Neu laden"), [this] { refreshFiles(); });
+        button(page, actions, "rrFilesOpen", i18n::text("Öffnen"), [this] { openSelected(); });
         button(page, actions, "rrFilesHash", "SHA-256", [this] { hashSelected(); });
         auto *rename = new QHBoxLayout;
         rows->addLayout(rename);
         renameInput = new QLineEdit(page);
         renameInput->setObjectName("rrFileRenameInput");
-        renameInput->setPlaceholderText("Neuer Dateiname");
+        renameInput->setPlaceholderText(i18n::text("Neuer Dateiname"));
         renameInput->setMaxLength(128);
         rename->addWidget(renameInput, 1);
-        button(page, rename, "rrFilesName", "Name", [this] { showKeyboard(renameInput); });
+        button(page, rename, "rrFilesName", i18n::text("Name"), [this] { showKeyboard(renameInput); });
         auto *changes = new QHBoxLayout;
         rows->addLayout(changes);
-        button(page, changes, "rrFilesRename", "Umbenennen", [this] { changeSelected(false); });
-        button(page, changes, "rrFilesDelete", "Löschen", [this] { changeSelected(true); });
+        button(page, changes, "rrFilesRename", i18n::text("Umbenennen"), [this] { changeSelected(false); });
+        button(page, changes, "rrFilesDelete", i18n::text("Löschen"), [this] { changeSelected(true); });
     }
     void buildModsPage() {
         auto *page = new QWidget(pages);
@@ -697,20 +703,21 @@ class Tools final : public QWidget {
         deviceReport = new QPlainTextEdit(page);
         deviceReport->setObjectName("rrDeviceReport");
         deviceReport->setReadOnly(true);
-        deviceReport->setPlainText("Geräteinformationen laden oder eine Datei prüfen.");
+        deviceReport->setPlainText(i18n::text("Geräteinformationen laden oder eine Datei prüfen."));
         rows->addWidget(deviceReport, 1);
         ui::readerStyle(deviceReport, QString("QPlainTextEdit{font-size:%1px;background:palette(base);color:palette("
                                               "text);border:1px solid palette(mid);border-radius:16px;padding:12px;}")
                                           .arg(int(m::chrome::labelText)));
         auto *actions = new QHBoxLayout;
         rows->addLayout(actions);
-        button(page, actions, "rrDeviceRefresh", "Aktualisieren", [this] { refreshDevice(); });
-        button(page, actions, "rrDeviceExport", "Exportieren",
+        button(page, actions, "rrDeviceRefresh", i18n::text("Aktualisieren"), [this] { refreshDevice(); });
+        button(page, actions, "rrDeviceExport", i18n::text("Exportieren"),
                [this] { exportReport(deviceReport->toPlainText().toUtf8(), "diagnose"); });
-        button(page, rows, "rrDocumentsBackup", "Dokumente sichern", [this] { backupDocuments(); });
+        button(page, rows, "rrDocumentsBackup", i18n::text("Dokumente sichern"), [this] { backupDocuments(); });
         auto *diagnostics = new QGridLayout;
         rows->addLayout(diagnostics);
-        const QStringList names{"Prozesse", "Speicher", "Netzwerk", "System"};
+        const QStringList names{i18n::text("Prozesse"), i18n::text("Speicher"), i18n::text("Netzwerk"),
+                                i18n::text("System")};
         const QStringList commands{"ps", "df -h", "ip addr 2>/dev/null || ifconfig", "uname -a"};
         for (int i = 0; i < names.size(); ++i) {
             auto *action = button(page, nullptr, qPrintable(QString("rrDiagnostic%1").arg(i)), names[i],
@@ -785,7 +792,7 @@ class Tools final : public QWidget {
             return;
         const auto cwd = workingDirectory->text();
         if (cwd.contains(QChar(0)) || cwd.contains('\n')) {
-            status->setText("Ungültiger Arbeitsordner");
+            status->setText(i18n::text("Ungültiger Arbeitsordner"));
             return;
         }
         if (history->count() == 101)
@@ -809,9 +816,10 @@ class Tools final : public QWidget {
     void discard(std::function<void()> action) {
         if (confirmation)
             return;
-        auto *dialog = new ui::ChoiceModal(this, {{}, QStringLiteral("Ungespeicherte Änderungen verwerfen?"), {}},
-                                           {QStringLiteral("Behalten"), "rrToolsKeep"},
-                                           {QStringLiteral("Verwerfen"), "rrToolsDiscard"});
+        auto *dialog =
+            new ui::ChoiceModal(this, {{}, i18n::text(QStringLiteral("Ungespeicherte Änderungen verwerfen?")), {}},
+                                {i18n::text(QStringLiteral("Behalten")), "rrToolsKeep"},
+                                {i18n::text(QStringLiteral("Verwerfen")), "rrToolsDiscard"});
         confirmation = dialog;
         connect(dialog->findChild<QPushButton *>("rrToolsKeep"), &QPushButton::clicked, dialog, &QObject::deleteLater);
         connect(dialog->findChild<QPushButton *>("rrToolsDiscard"), &QPushButton::clicked, this, [dialog, action] {
@@ -825,7 +833,7 @@ class Tools final : public QWidget {
     }
     void closeTools() {
         if (pending) {
-            status->setText(QStringLiteral("Bitte das Speichern abwarten."));
+            status->setText(i18n::text(QStringLiteral("Bitte das Speichern abwarten.")));
             return;
         }
         if (keyboard)
@@ -866,15 +874,16 @@ class Tools final : public QWidget {
         rows->setSpacing(m::spacing::row);
         auto *header = new QHBoxLayout;
         rows->addLayout(header);
-        auto *title = new ui::InterfaceLabel(QStringLiteral("ROREADER · Werkzeuge"), this);
+        auto *title = new ui::InterfaceLabel(i18n::text(QStringLiteral("ROREADER · Werkzeuge")), this);
         ui::readerStyle(title, ui::styles::font(m::text::body));
         header->addWidget(title, 1);
-        button(this, header, "rrToolsClose", QStringLiteral("Zurück"), [this] { closeTools(); });
+        button(this, header, "rrToolsClose", i18n::text(QStringLiteral("Zurück")), [this] { closeTools(); });
         auto *tabs = new QGridLayout;
         rows->addLayout(tabs);
         pages = new QStackedWidget(this);
         auto *tabGroup = new QButtonGroup(this);
-        const QStringList pageNames{"Terminal", "Sketchpad", "Texteditor", "Dateien", "Gerät / Mods", "Spiele"};
+        const QStringList pageNames{i18n::text("Terminal"), i18n::text("Sketchpad"),    i18n::text("Texteditor"),
+                                    i18n::text("Dateien"),  i18n::text("Gerät / Mods"), i18n::text("Spiele")};
         const char *pageIds[] = {"rrToolsTerminal", "rrToolsSketch", "rrToolsEditor",
                                  "rrToolsFiles",    "rrToolsMods",   "rrToolsGames"};
         for (int page = 0; page < pageNames.size(); ++page) {
@@ -900,8 +909,9 @@ class Tools final : public QWidget {
         terminal->setObjectName("rrTerminalOutput");
         terminal->setReadOnly(true);
         terminal->setMaximumBlockCount(1000);
-        terminal->setPlainText(QStringLiteral("ROREADER Shell · Verlauf, Arbeitsordner und Programmeingabe\nKein "
-                                              "Vollbild-Terminal. Befehle laufen mit Reader-Rechten."));
+        terminal->setPlainText(
+            i18n::text(QStringLiteral("ROREADER Shell · Verlauf, Arbeitsordner und Programmeingabe\nKein "
+                                      "Vollbild-Terminal. Befehle laufen mit Reader-Rechten.")));
         auto *terminalOptions = new QHBoxLayout;
         terminalRows->addLayout(terminalOptions);
         workingDirectory = new QLineEdit(terminalPage);
@@ -909,7 +919,7 @@ class Tools final : public QWidget {
         shellDirectory = QFileInfo::exists(directory) ? directory : QDir::homePath();
         workingDirectory->setText(shellDirectory);
         terminalOptions->addWidget(workingDirectory, 1);
-        button(terminalPage, terminalOptions, "rrTerminalDirectoryKeyboard", "Ordner",
+        button(terminalPage, terminalOptions, "rrTerminalDirectoryKeyboard", i18n::text("Ordner"),
                [this] { showKeyboard(workingDirectory); });
         history = new QComboBox(terminalPage);
         ui::readerStyle(history,
@@ -919,7 +929,7 @@ class Tools final : public QWidget {
                             .arg(int(m::chrome::labelText))
                             .arg(ui::px(64)));
         history->setObjectName("rrTerminalHistory");
-        history->addItem("Verlauf");
+        history->addItem(i18n::text("Verlauf"));
         terminalRows->addWidget(history);
         connect(history, qOverload<int>(&QComboBox::activated), this, [this](int index) {
             if (index > 0)
@@ -927,28 +937,30 @@ class Tools final : public QWidget {
         });
         auto *consoleActions = new QHBoxLayout;
         terminalRows->addLayout(consoleActions);
-        button(terminalPage, consoleActions, "rrTerminalClear", "Leeren", [this] { terminal->clear(); });
-        button(terminalPage, consoleActions, "rrTerminalExport", "Exportieren",
+        button(terminalPage, consoleActions, "rrTerminalClear", i18n::text("Leeren"), [this] { terminal->clear(); });
+        button(terminalPage, consoleActions, "rrTerminalExport", i18n::text("Exportieren"),
                [this] { exportReport(terminal->toPlainText().toUtf8(), "terminal"); });
         terminalRows->addWidget(terminal, 1);
         command = new QLineEdit(terminalPage);
         command->setObjectName("rrTerminalCommand");
         command->setMaxLength(4096);
         command->installEventFilter(this);
-        command->setPlaceholderText(QStringLiteral("Shell-Befehl"));
+        command->setPlaceholderText(i18n::text(QStringLiteral("Shell-Befehl")));
         command->setMinimumHeight(m::chrome::actionHeight);
         terminalRows->addWidget(command);
         auto *terminalActions = new QHBoxLayout;
         terminalRows->addLayout(terminalActions);
-        button(terminalPage, terminalActions, "rrTerminalKeyboard", QStringLiteral("Tastatur"),
+        button(terminalPage, terminalActions, "rrTerminalKeyboard", i18n::text(QStringLiteral("Tastatur")),
                [this] { showKeyboard(command); });
-        button(terminalPage, terminalActions, "rrTerminalRun", QStringLiteral("Ausführen"), [this] { runCommand(); });
-        button(terminalPage, terminalActions, "rrTerminalStop", QStringLiteral("Stoppen"), [this] { stopShell(); });
+        button(terminalPage, terminalActions, "rrTerminalRun", i18n::text(QStringLiteral("Ausführen")),
+               [this] { runCommand(); });
+        button(terminalPage, terminalActions, "rrTerminalStop", i18n::text(QStringLiteral("Stoppen")),
+               [this] { stopShell(); });
         shell = new QProcess(this);
         connect(shell, &QProcess::started, this, [this] { shellGroup = shell->processId(); });
         connect(shell, &QProcess::started, this, [this] {
-            findChild<QPushButton *>("rrTerminalRun")->setText("Senden");
-            command->setPlaceholderText("Programmeingabe · Enter sendet eine Zeile");
+            findChild<QPushButton *>("rrTerminalRun")->setText(i18n::text("Senden"));
+            command->setPlaceholderText(i18n::text("Programmeingabe · Enter sendet eine Zeile"));
         });
         shell->setProcessChannelMode(QProcess::MergedChannels);
 #if defined(Q_OS_UNIX) && QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -965,14 +977,14 @@ class Tools final : public QWidget {
                 terminalFrame.start();
             if (outputBytes > textLimit) {
                 flushTerminal(true);
-                terminal->appendPlainText("Ausgabelimit erreicht.");
+                terminal->appendPlainText(i18n::text("Ausgabelimit erreicht."));
                 stopShell();
             }
         });
         deadline = new QTimer(this);
         deadline->setSingleShot(true);
         connect(deadline, &QTimer::timeout, this, [this] {
-            terminal->appendPlainText(QStringLiteral("Zeitlimit erreicht."));
+            terminal->appendPlainText(i18n::text(QStringLiteral("Zeitlimit erreicht.")));
             stopShell();
         });
         connect(shell, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this,
@@ -980,16 +992,16 @@ class Tools final : public QWidget {
                     stopShell();
                     deadline->stop();
                     flushTerminal(true);
-                    terminal->appendPlainText(QStringLiteral("\nExit: %1").arg(code));
-                    findChild<QPushButton *>("rrTerminalRun")->setText("Ausführen");
-                    command->setPlaceholderText("Shell-Befehl");
+                    terminal->appendPlainText(i18n::text(QStringLiteral("\nExit: %1")).arg(code));
+                    findChild<QPushButton *>("rrTerminalRun")->setText(i18n::text("Ausführen"));
+                    command->setPlaceholderText(i18n::text("Shell-Befehl"));
                 });
         connect(shell, &QProcess::errorOccurred, this, [this](QProcess::ProcessError) {
             status->setText(shell->errorString());
             if (shell->state() == QProcess::NotRunning) {
                 deadline->stop();
                 flushTerminal(true);
-                findChild<QPushButton *>("rrTerminalRun")->setText("Ausführen");
+                findChild<QPushButton *>("rrTerminalRun")->setText(i18n::text("Ausführen"));
             }
         });
         connect(command, &QLineEdit::returnPressed, this, [this] { runCommand(); });
@@ -1000,22 +1012,24 @@ class Tools final : public QWidget {
         sketchRows->addLayout(sketchActions);
         sketch = new SketchCanvas(sketchPage);
         sketchRows->addWidget(sketch, 1);
-        auto *eraser = button(sketchPage, sketchActions, "rrSketchEraser", QStringLiteral("Radierer"), [] {});
+        auto *eraser =
+            button(sketchPage, sketchActions, "rrSketchEraser", i18n::text(QStringLiteral("Radierer")), [] {});
         eraser->setCheckable(true);
         connect(eraser, &QPushButton::toggled, this, [this, eraser](bool active) {
             sketch->eraser = active;
-            eraser->setText(active ? "Stift" : "Radierer");
+            eraser->setText(active ? i18n::text("Stift") : i18n::text("Radierer"));
         });
-        button(sketchPage, sketchActions, "rrSketchUndo", QStringLiteral("Rückgängig"),
+        button(sketchPage, sketchActions, "rrSketchUndo", i18n::text(QStringLiteral("Rückgängig")),
                [this] { sketch->undoStroke(); });
-        button(sketchPage, sketchActions, "rrSketchClear", QStringLiteral("Neu"), [this] {
+        button(sketchPage, sketchActions, "rrSketchClear", i18n::text(QStringLiteral("Neu")), [this] {
             auto clear = [this] { sketch->clearPaper(); };
             if (sketch->dirty)
                 discard(clear);
             else
                 clear();
         });
-        button(sketchPage, sketchActions, "rrSketchSave", QStringLiteral("Speichern"), [this] { saveSketch(); });
+        button(sketchPage, sketchActions, "rrSketchSave", i18n::text(QStringLiteral("Speichern")),
+               [this] { saveSketch(); });
         auto *brushRow = new QHBoxLayout;
         sketchRows->insertLayout(1, brushRow);
         auto *brush = new QSlider(Qt::Horizontal, sketchPage);
@@ -1024,11 +1038,11 @@ class Tools final : public QWidget {
         brush->setValue(5);
         brushRow->addWidget(brush, 1);
         connect(brush, &QSlider::valueChanged, this, [this](int size) { sketch->penWidth = size; });
-        button(sketchPage, brushRow, "rrSketchRedo", "Wiederholen", [this] { sketch->redoStroke(); });
-        auto *shade = button(sketchPage, brushRow, "rrSketchShade", "Grau", [] {});
+        button(sketchPage, brushRow, "rrSketchRedo", i18n::text("Wiederholen"), [this] { sketch->redoStroke(); });
+        auto *shade = button(sketchPage, brushRow, "rrSketchShade", i18n::text("Grau"), [] {});
         connect(shade, &QPushButton::clicked, this, [this, shade] {
             sketch->ink = sketch->ink == Qt::black ? QColor(110, 110, 110) : QColor(Qt::black);
-            shade->setText(sketch->ink == Qt::black ? "Grau" : "Schwarz");
+            shade->setText(sketch->ink == Qt::black ? i18n::text("Grau") : i18n::text("Schwarz"));
         });
         auto *editorPage = new QWidget(pages);
         pages->addWidget(editorPage);
@@ -1040,11 +1054,11 @@ class Tools final : public QWidget {
         editorRows->addWidget(filename);
         auto *fileActions = new QHBoxLayout;
         editorRows->addLayout(fileActions);
-        button(editorPage, fileActions, "rrTextFilenameKeyboard", QStringLiteral("Dateiname"),
+        button(editorPage, fileActions, "rrTextFilenameKeyboard", i18n::text(QStringLiteral("Dateiname")),
                [this] { showKeyboard(filename); });
-        button(editorPage, fileActions, "rrTextOpen", QStringLiteral("Öffnen"), [this] { loadText(); });
-        button(editorPage, fileActions, "rrTextSave", QStringLiteral("Speichern"), [this] { saveText(); });
-        button(editorPage, fileActions, "rrTextNew", QStringLiteral("Neu"), [this] {
+        button(editorPage, fileActions, "rrTextOpen", i18n::text(QStringLiteral("Öffnen")), [this] { loadText(); });
+        button(editorPage, fileActions, "rrTextSave", i18n::text(QStringLiteral("Speichern")), [this] { saveText(); });
+        button(editorPage, fileActions, "rrTextNew", i18n::text(QStringLiteral("Neu")), [this] {
             auto clear = [this] {
                 editor->clear();
                 editor->document()->setModified(false);
@@ -1061,7 +1075,7 @@ class Tools final : public QWidget {
         editorRows->addWidget(editor, 1);
         insert = new QLineEdit(editorPage);
         insert->setObjectName("rrTextInsert");
-        insert->setPlaceholderText(QStringLiteral("Text an der Auswahl einfügen"));
+        insert->setPlaceholderText(i18n::text(QStringLiteral("Text an der Auswahl einfügen")));
         insert->setMaxLength(4096);
         insert->setMinimumHeight(m::chrome::actionHeight);
         editorRows->addWidget(insert);
@@ -1069,9 +1083,9 @@ class Tools final : public QWidget {
         editorRows->addLayout(searchRow);
         findInput = new QLineEdit(editorPage);
         findInput->setObjectName("rrTextFind");
-        findInput->setPlaceholderText("Im Text suchen");
+        findInput->setPlaceholderText(i18n::text("Im Text suchen"));
         searchRow->addWidget(findInput, 1);
-        button(editorPage, searchRow, "rrTextFindKeyboard", "Suche", [this] { showKeyboard(findInput); });
+        button(editorPage, searchRow, "rrTextFindKeyboard", i18n::text("Suche"), [this] { showKeyboard(findInput); });
         button(editorPage, searchRow, "rrTextFindNext", "Weiter", [this] {
             if (findInput->text().isEmpty())
                 return;
@@ -1080,19 +1094,21 @@ class Tools final : public QWidget {
                 cursor.movePosition(QTextCursor::Start);
                 editor->setTextCursor(cursor);
                 if (!editor->find(findInput->text()))
-                    status->setText("Kein Treffer");
+                    status->setText(i18n::text("Kein Treffer"));
             }
         });
         auto *textActions = new QHBoxLayout;
         editorRows->addLayout(textActions);
-        button(editorPage, textActions, "rrTextKeyboard", QStringLiteral("Tastatur"), [this] { showKeyboard(insert); });
-        button(editorPage, textActions, "rrTextAdd", QStringLiteral("Einfügen"), [this] {
+        button(editorPage, textActions, "rrTextKeyboard", i18n::text(QStringLiteral("Tastatur")),
+               [this] { showKeyboard(insert); });
+        button(editorPage, textActions, "rrTextAdd", i18n::text(QStringLiteral("Einfügen")), [this] {
             editor->insertPlainText(insert->text());
             insert->clear();
         });
-        button(editorPage, textActions, "rrTextNewline", QStringLiteral("Neue Zeile"),
+        button(editorPage, textActions, "rrTextNewline", i18n::text(QStringLiteral("Neue Zeile")),
                [this] { editor->insertPlainText("\n"); });
-        button(editorPage, textActions, "rrTextUndo", QStringLiteral("Rückgängig"), [this] { editor->undo(); });
+        button(editorPage, textActions, "rrTextUndo", i18n::text(QStringLiteral("Rückgängig")),
+               [this] { editor->undo(); });
         buildFilesPage();
         buildModsPage();
         pages->addWidget(createGamesPanel(pages));

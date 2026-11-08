@@ -173,6 +173,7 @@ Reader::Reader(std::unique_ptr<kobalt::ReadingBook> openedBook, kobalt::ReaderOr
         kobalt::diagnostic("settings-unreadable", {{"status", kobalt::storage::readStatusName(savedSettings.status)}},
                            false);
     preferences = appearance::readerPreferences(savedSettings.object, book->layoutPreferences());
+    i18n::setLanguage(preferences.value("ui_language").toString());
     // Migrate layout once into the shared profile. A damaged settings file is
     // left for the next explicit settings save to replace.
     const bool settingsReadable = savedSettings.status == kobalt::storage::ReadStatus::Ok ||
@@ -651,9 +652,9 @@ void Reader::buildToolbar() {
                                                      openSettings();
                                              });
     toolbarComposition.settings->setCheckable(true);
-    toolbarComposition.tools = iconButton(topControls, top, "rrQuickTools", QStringLiteral("Werkzeuge und Spiele"), ControlIcon::Advanced,
+    toolbarComposition.tools = iconButton(topControls, top, "rrQuickTools", i18n::text("Werkzeuge und Spiele"), ControlIcon::Advanced,
                [this] { openTools(this, services.keyboard); });
-    auto *quickTheme = iconButton(topControls, top, "rrQuickTheme", QStringLiteral("Tag / Nacht"), ControlIcon::Light,
+    auto *quickTheme = iconButton(topControls, top, "rrQuickTheme", i18n::text("Tag / Nacht"), ControlIcon::Light,
                                   [this] {
                                       if (model->busy() || appearanceEdit.applying()) return;
                                       applyDarkMode(!preferences.value("dark_mode").toBool());

@@ -8,6 +8,14 @@
 
 ROREADER baut auf Kobalt auf und verwendet dessen Qt-Oberfläche und CREngine-Renderer. Du kannst DRM-freie EPUBs lesen, Zeichnungen anfertigen, Textdateien bearbeiten und Shell-Kommandos direkt auf dem Reader ausführen. Geschützte Bücher, PDFs und andere nicht unterstützte Formate werden weiterhin vom eingebauten Reader geöffnet.
 
+## Sprachen
+
+Reader-Menüs, Werkzeuge, Spiele und der Website-Installer bieten **Deutsch, Englisch, Französisch, Spanisch, Italienisch, Portugiesisch, Niederländisch, Polnisch, Tschechisch, Slowakisch, Ungarisch, Rumänisch, Türkisch, Ukrainisch, Russisch, Schwedisch, Dänisch, Norwegisch, Finnisch, Indonesisch und Kurdisch (Kurmancî)**.
+
+Auf dem Reader: **Einstellungen → System → Sprache**, danach **Übernehmen** und das Buch erneut öffnen. Ohne eigene Auswahl wird die Gerätesprache verwendet; unbekannte Sprachen fallen auf Englisch zurück. Auf der Website steht die Sprachwahl oben; sie berücksichtigt die Browser-Sprache und merkt sich die Auswahl lokal. Sprachwechsel laden die Seite neu, daher danach den Reader-Ordner erneut auswählen. Während einer Installation ist die Sprachwahl gesperrt.
+
+Die Kataloge sind lokal enthalten und benötigen keine Übersetzungsdienste beim Lesen oder Installieren. Die Übersetzungen sind maschinelle Erstfassungen und noch nicht vollständig muttersprachlich geprüft. Technische Systemmeldungen, Dateinamen, Buchinhalte und Lizenztexte bleiben in ihrer Originalsprache. Weitere Informationen und Prüfungen: [Übersetzungen](doc/localization.md).
+
 ## Werkzeuge auf dem Gerät
 
 Tippe im Lesemenü auf das **Werkzeug-Symbol**. Alternativ: **Einstellungen → System → Terminal · Sketchpad · Texteditor**. Der Tag-/Nacht-Schalter im Lesemenü wechselt das Design ohne den Umweg über die Einstellungen.
